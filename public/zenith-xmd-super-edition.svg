@@ -1,0 +1,136 @@
+<svg width="1200" height="1200" viewBox="0 0 1200 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="1200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#090B2A"/>
+      <stop offset="0.38" stop-color="#3B0A5F"/>
+      <stop offset="0.7" stop-color="#0F3A4C"/>
+      <stop offset="1" stop-color="#090B2A"/>
+    </linearGradient>
+    <linearGradient id="neonPink" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FF5BEF"/>
+      <stop offset="1" stop-color="#FFCF5A"/>
+    </linearGradient>
+    <linearGradient id="neonBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#2DE2FF"/>
+      <stop offset="1" stop-color="#3399FF"/>
+    </linearGradient>
+    <linearGradient id="neonGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#8BFFB1"/>
+      <stop offset="1" stop-color="#32E5A0"/>
+    </linearGradient>
+    <linearGradient id="neonYellow" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFE66F"/>
+      <stop offset="1" stop-color="#FFD000"/>
+    </linearGradient>
+    <filter id="glowPink" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowBlue" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+
+  <g opacity="0.8">
+    <circle cx="170" cy="220" r="210" fill="#1FE0FF" opacity="0.15"/>
+    <circle cx="960" cy="180" r="180" fill="#FF37C6" opacity="0.18"/>
+    <circle cx="930" cy="980" r="220" fill="#5BFF89" opacity="0.12"/>
+    <circle cx="160" cy="960" r="190" fill="#FF9A3D" opacity="0.12"/>
+  </g>
+
+  <g opacity="0.35">
+    <path d="M52 292C164 241 196 335 289 366C479 430 439 127 609 118C807 106 757 474 914 522C1031 559 1087 475 1147 441V945C1050 1033 1010 1021 916 1063C716 1139 642 792 484 777C284 758 203 999 66 942C-48 895 -15 355 52 292Z" fill="#5EF2FF" opacity="0.18"/>
+  </g>
+
+  <g>
+    <text x="121" y="150" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="54">WhatsApp</text>
+    <text x="121" y="208" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="54">Bot</text>
+  </g>
+
+  <g filter="url(#glowBlue)">
+    <circle cx="937" cy="120" r="74" stroke="#4AFFFF" stroke-width="10" fill="none"/>
+    <path d="M867 120L915 170L995 70" stroke="#4AFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g>
+    <path d="M725 228C731 197 757 176 788 176C824 176 848 200 854 230L858 249L800 263L736 259L725 228Z" fill="#111217"/>
+    <path d="M719 225C720 202 739 178 769 170C767 155 782 140 804 140C836 140 856 168 862 190C875 189 884 195 889 207C896 222 896 257 876 267C868 271 857 273 845 273H770C755 273 740 270 727 263C708 252 704 236 719 225Z" fill="#111217" stroke="#FF41F2" stroke-width="4"/>
+    <path d="M856 215C868 196 887 184 905 189C921 194 926 211 922 228L914 260H860L856 215Z" fill="#111217" stroke="#FF41F2" stroke-width="4"/>
+    <path d="M750 190C768 176 790 170 814 175" stroke="#FF41F2" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <path d="M728 267C728 186 787 118 867 118C945 118 1004 185 1004 267C1004 350 945 418 867 418C787 418 728 351 728 267ZM814 268C814 316 840 354 882 354C922 354 950 315 950 268C950 220 923 181 882 181C840 181 814 220 814 268Z" fill="#0B0B14" stroke="#4AF5FF" stroke-width="8"/>
+    <path d="M864 251L892 282L916 254L928 266L891 305L852 271L864 251Z" fill="#FF5BEF"/>
+  </g>
+
+  <g>
+    <circle cx="459" cy="335" r="183" fill="#0B0C15" stroke="#FF56F6" stroke-width="12" stroke-linecap="round"/>
+    <g opacity="0.9">
+      <path d="M359 328C393 278 437 262 482 272C496 274 510 279 523 287C519 300 510 310 496 315C476 323 453 327 430 328C410 328 390 333 371 342L359 328Z" fill="#FF6BE8" opacity="0.4"/>
+      <path d="M520 420C552 399 589 382 624 383C650 384 666 408 657 429C648 450 621 468 591 475C545 486 501 471 476 446C436 410 451 358 498 344C553 329 633 356 639 400C644 433 603 466 557 470C535 472 513 466 499 452L490 436C487 426 493 418 503 417C517 415 530 415 541 411C560 406 580 394 588 375C595 357 586 330 567 316C531 291 483 303 452 332C425 357 411 392 420 430C429 473 475 512 530 512C589 512 640 474 650 420C661 363 626 323 576 312C532 302 483 316 444 343" stroke="#FF57E9" stroke-width="14" stroke-linecap="round" opacity="0.9"/>
+      <path d="M372 421C370 395 382 369 405 350C431 330 470 318 496 325C516 330 535 345 541 368C548 392 542 425 519 443C498 459 465 468 435 462C405 455 381 441 372 421Z" fill="#0E121B" stroke="#2AE8FF" stroke-width="8"/>
+      <path d="M427 376C438 357 459 344 481 345C505 346 525 360 533 381C541 402 538 425 517 439C498 452 468 453 447 441C425 428 413 405 427 376Z" fill="#1A2135"/>
+      <circle cx="465" cy="384" r="12" fill="#E7F4FF"/>
+      <circle cx="516" cy="384" r="12" fill="#E7F4FF"/>
+      <path d="M466 430C480 442 497 447 512 440" stroke="#FF7ED8" stroke-width="8" stroke-linecap="round"/>
+      <path d="M346 515C333 508 323 500 314 492C294 475 287 460 291 436C300 448 314 457 331 463C352 470 371 478 388 495L346 515Z" fill="#FF6AE8" opacity="0.6"/>
+    </g>
+  </g>
+
+  <g>
+    <circle cx="947" cy="695" r="132" fill="#0B0F18" stroke="#44F0FF" stroke-width="10"/>
+    <path d="M944 637C901 637 867 671 867 714V768C867 811 901 845 944 845C987 845 1021 811 1021 768V714C1021 671 987 637 944 637Z" fill="#121F2E" stroke="#44F0FF" stroke-width="8"/>
+    <path d="M909 781H978" stroke="#44F0FF" stroke-width="8" stroke-linecap="round"/>
+    <path d="M944 766V801" stroke="#44F0FF" stroke-width="8" stroke-linecap="round"/>
+    <rect x="904" y="718" width="80" height="80" rx="18" fill="#0E1727" stroke="#44F0FF" stroke-width="6"/>
+    <circle cx="944" cy="758" r="18" fill="#7EF9FF" opacity="0.55"/>
+  </g>
+
+  <g filter="url(#glowPink)">
+    <path d="M250 552C433 540 555 568 656 640C712 683 784 769 718 816C647 866 530 808 399 819C267 830 155 889 94 820C32 750 92 569 250 552Z" fill="none" stroke="url(#neonPink)" stroke-width="14" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <text x="105" y="670" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="900" font-size="104" letter-spacing="5">CALL</text>
+    <text x="402" y="770" fill="url(#neonPink)" font-family="Verdana, Arial, sans-serif" font-weight="900" font-size="160" letter-spacing="2">ZENITH</text>
+    <text x="147" y="930" fill="url(#neonBlue)" font-family="Verdana, Arial, sans-serif" font-weight="900" font-size="198" letter-spacing="2">XMD</text>
+    <text x="456" y="1040" fill="url(#neonYellow)" font-family="Verdana, Arial, sans-serif" font-weight="900" font-size="98" letter-spacing="3">SUPER EDITION</text>
+  </g>
+
+  <g>
+    <rect x="102" y="1052" width="130" height="68" rx="18" fill="#0E0F19" stroke="#4AF5FF" stroke-width="4"/>
+    <text x="130" y="1093" fill="#4AF5FF" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="48">⚡</text>
+    <text x="180" y="1097" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="23">FAST</text>
+    <text x="180" y="1121" fill="#a4d9ff" font-family="Verdana, Arial, sans-serif" font-size="18">RESPONSE</text>
+
+    <rect x="272" y="1052" width="180" height="68" rx="18" fill="#0E0F19" stroke="#31F09A" stroke-width="4"/>
+    <text x="300" y="1095" fill="#31F09A" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="40">✓</text>
+    <text x="345" y="1097" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="23">100%</text>
+    <text x="345" y="1121" fill="#9ef7ce" font-family="Verdana, Arial, sans-serif" font-size="18">SECURE</text>
+
+    <rect x="495" y="1052" width="170" height="68" rx="18" fill="#0E0F19" stroke="#FF4FE1" stroke-width="4"/>
+    <text x="520" y="1095" fill="#FF4FE1" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="38">∞</text>
+    <text x="560" y="1097" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="23">NO</text>
+    <text x="560" y="1121" fill="#ffb3f3" font-family="Verdana, Arial, sans-serif" font-size="18">LIMITS</text>
+
+    <rect x="709" y="1052" width="165" height="68" rx="18" fill="#0E0F19" stroke="#FFC857" stroke-width="4"/>
+    <text x="740" y="1095" fill="#FFC857" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="38">◎</text>
+    <text x="780" y="1097" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="21">MULTI</text>
+    <text x="780" y="1121" fill="#ffe6a8" font-family="Verdana, Arial, sans-serif" font-size="18">FEATURES</text>
+
+    <rect x="920" y="1052" width="170" height="68" rx="18" fill="#0E0F19" stroke="#7EE8FF" stroke-width="4"/>
+    <text x="950" y="1096" fill="#7EE8FF" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="36">✦</text>
+    <text x="991" y="1097" fill="#fff" font-family="Verdana, Arial, sans-serif" font-weight="700" font-size="23">PREMIUM</text>
+    <text x="991" y="1121" fill="#d9f6ff" font-family="Verdana, Arial, sans-serif" font-size="18">QUALITY</text>
+  </g>
+</svg>
