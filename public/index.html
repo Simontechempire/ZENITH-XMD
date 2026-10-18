@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENITH-XMD • Control Center</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+body{background:#000;color:#fff;min-height:100vh;padding:20px}
+.header{text-align:center;padding:30px 0;border-bottom:1px solid #222}
+.header h1{font-size:56px;font-weight:900;letter-spacing:-2px;line-height:0.9}
+.header h1 span{background:linear-gradient(90deg,#fff,#888);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{margin-top:12px;color:#888;font-size:14px;letter-spacing:3px;text-transform:uppercase}
+.card{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:24px;padding:24px;margin:20px 0}
+.card h2{font-size:18px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cat{background:#111;border:1px solid #222;border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;transition:0.2s}
+.cat.active{border-color:#fff;background:#151515}
+.cat b{font-size:14px}
+.switch{width:48px;height:28px;background:#222;border-radius:99px;position:relative;cursor:pointer;transition:0.2s}
+.switch.on{background:#fff}
+.switch::after{content:'';position:absolute;width:22px;height:22px;background:#000;border-radius:50%;top:3px;left:3px;transition:0.2s}
+.switch.on::after{left:23px;background:#000}
+.switch.on{background:#fff}
+.status{display:flex;justify-content:space-between;margin-top:20px;color:#666;font-size:12px}
+button{width:100%;padding:18px;background:#fff;color:#000;border:none;border-radius:16px;font-weight:800;font-size:16px;cursor:pointer;margin-top:20px}
+button:active{transform:scale(0.98)}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>ZENITH<br><span>XMD</span></h1>
+<p>Peak Edition • 200 CMD • Simon Tech Inc</p>
+</div>
+
+<div class="card">
+<h2>🎛️ COMMAND CONTROL</h2>
+<div class="grid" id="grid"></div>
+<div class="status"><span id="total">Loading...</span><span id="enabled">-</span></div>
+<button onclick="save()">SAVE & APPLY PEAK MODE 🏔️</button>
+</div>
+
+<script>
+const CATS = ["BOT","OWNER","GROUP","AI","DOWNLOADER","CONVERTER","SEARCH","LOGO","FUN","GAME","NSFW","TOOLS","OTHER"];
+let enabled = [];
+
+async function load(){
+  let res = await fetch('/api/control');
+  let data = await res.json();
+  enabled = data.enabledCategories || CATS;
+  render();
+  document.getElementById('total').innerText = 'Total Categories: '+CATS.length;
+}
+function render(){
+  let grid = document.getElementById('grid');
+  grid.innerHTML='';
+  CATS.forEach(cat=>{
+    let isOn = enabled.includes(cat);
+    let div = document.createElement('div');
+    div.className='cat '+(isOn?'active':'');
+    div.innerHTML=`<b>${cat}</b><div class="switch ${isOn?'on':''}" onclick="toggle('${cat}')"></div>`;
+    grid.appendChild(div);
+  });
+  document.getElementById('enabled').innerText = 'Enabled: '+enabled.length;
+}
+function toggle(cat){
+  if(enabled.includes(cat)) enabled = enabled.filter(c=>c!==cat);
+  else enabled.push(cat);
+  render();
+}
+async function save(){
+  await fetch('/api/control',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabledCategories:enabled})});
+  alert('✅ ZENITH-XMD Updated! Peak Mode Active! 🏔️👑');
+}
+load();
+</script>
+</body>
+</html>
