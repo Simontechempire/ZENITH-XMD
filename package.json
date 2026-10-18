@@ -1,18 +1,34 @@
 {
   "name": "zenith-xmd",
   "version": "1.0.0",
-  "description": "ZENITH-XMD - Peak Edition 2026 - 200 Commands Only",
+  "description": "ZENITH-XMD • Peak Edition 2026 • Pairing Code • 300 CMD • By Simon",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
     "start": "node index.js"
   },
+  "keywords": [
+    "zenith-xmd",
+    "whatsapp-bot",
+    "baileys",
+    "pairing-code",
+    "simon-tech"
+  ],
+  "author": "Simon",
+  "license": "MIT",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
     "pino": "^8.16.2",
-    "chalk": "^4.1.2",
     "express": "^4.18.2",
-    "qrcode-terminal": "^0.12.0",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "chalk": "^4.1.2",
+    "axios": "^1.6.7",
+    "dotenv": "^16.3.1",
+    "file-type": "^18.5.0",
+    "moment-timezone": "^0.5.44",
+    "node-fetch": "^2.6.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
