@@ -1,0 +1,18 @@
+{
+  "name": "zenith-xmd",
+  "version": "1.0.0",
+  "description": "ZENITH-XMD - Peak Edition 2026 - 200 Commands Only",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18",
+    "pino": "^8.16.2",
+    "chalk": "^4.1.2",
+    "express": "^4.18.2",
+    "qrcode-terminal": "^0.12.0",
+    "fs-extra": "^11.2.0"
+  }
+}
