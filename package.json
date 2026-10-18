@@ -1,21 +1,13 @@
 {
   "name": "zenith-xmd",
   "version": "2.0.0",
-  "description": "ZENITH-XMD • Peak Edition 2026 • Pairing Code • 365 CMD • iOS • By Simon • PUBLIC",
+  "description": "ZENITH-XMD • Peak Edition 2026 • 365 CMD • By Simon",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
     "start": "node index.js"
   },
-  "keywords": [
-    "zenith-xmd",
-    "whatsapp-bot",
-    "baileys",
-    "pairing-code",
-    "2026",
-    "simon-tech",
-    "ios"
-  ],
+  "keywords": ["zenith-xmd", "baileys", "2026", "simon"],
   "author": "Simon",
   "license": "MIT",
   "dependencies": {
@@ -31,7 +23,6 @@
     "node-fetch": "^2.7.0",
     "qrcode-terminal": "^0.12.0",
     "ws": "^8.17.0",
-    "jimp": "^0.22.10",
     "yt-search": "^2.11.1"
   },
   "engines": {
