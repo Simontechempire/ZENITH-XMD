@@ -1,7 +1,7 @@
 /**
  * ZENITH-XMD
  * Multi-Device WhatsApp Bot
- * Fixed for Render - QR + Pairing Code
+ * Fixed for Render - QR + Pairing Code + Recursive Plugins
  */
 
 const fs = require('fs');
@@ -21,7 +21,7 @@ try {
   };
 }
 
-// ===== LOAD ALL PLUGINS FROM /plugins =====
+// ===== LOAD ALL PLUGINS FROM /plugins - RECURSIVE FIX =====
 global.plugins = new Map();
 global.config = config;
 
@@ -32,32 +32,44 @@ function loadPlugins() {
     console.log("📂 Created /plugins folder");
     return;
   }
-  const files = fs.readdirSync(pluginsPath).filter(f => f.endsWith('.js'));
-  global.plugins.clear();
-  console.log(`\n🏔️ ===== LOADING ${files.length} PLUGINS =====`);
   
-  for (const file of files) {
-    try {
-      const fp = path.join(pluginsPath, file);
-      delete require.cache[require.resolve(fp)];
-      const plugin = require(fp);
-      
-      if(!plugin.name || !plugin.execute) {
-        console.log(`⚠️ SKIP ${file}`);
-        continue;
+  global.plugins.clear();
+  let fileCount = 0;
+
+  function readDir(dir) {
+    const items = fs.readdirSync(dir);
+    for (const item of items) {
+      const fullPath = path.join(dir, item);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        readDir(fullPath);
+      } else if (item.endsWith('.js')) {
+        fileCount++;
+        try {
+          delete require.cache[require.resolve(fullPath)];
+          const plugin = require(fullPath);
+          
+          if(!plugin.name || !plugin.execute) {
+            console.log(`⚠️ SKIP ${item} - no name/execute`);
+            continue;
+          }
+          
+          const allCmds = [plugin.name, ...(plugin.alias || [])];
+          allCmds.forEach(cmd => {
+            global.plugins.set(cmd.toLowerCase(), plugin);
+          });
+          
+          console.log(`✅ ${item} → ${plugin.name}`);
+        } catch(e) {
+          console.log(`❌ ${item} failed: ${e.message}`);
+        }
       }
-      
-      const allCmds = [plugin.name, ...(plugin.alias || [])];
-      allCmds.forEach(cmd => {
-        global.plugins.set(cmd.toLowerCase(), plugin);
-      });
-      
-      console.log(`✅ ${file} → ${plugin.name}`);
-    } catch(e) {
-      console.log(`❌ ${file} failed: ${e.message}`);
     }
   }
-  console.log(`🔥 ZENITH TOTAL: ${global.plugins.size} commands\n`);
+
+  console.log(`\n🏔️ ===== SCANNING PLUGINS FOLDER =====`);
+  readDir(pluginsPath);
+  console.log(`🔥 ZENITH TOTAL: ${global.plugins.size} commands from ${fileCount} files\n`);
 }
 
 loadPlugins();
