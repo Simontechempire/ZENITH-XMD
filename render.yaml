@@ -1,0 +1,19 @@
+services:
+    - type: web
+    name: zenith-xmd
+    env: node
+    plan: free
+    region: singapore
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+            - key: NODE_VERSION
+        value: 18.20.0
+            - key: OWNER_NUMBER
+        value: 2348071569915
+            - key: BOT_NAME
+        value: ZENITH-XMD
+            - key: PORT
+        value: 10000
+            - key: PREFIX
+        value: .
