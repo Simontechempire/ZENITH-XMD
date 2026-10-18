@@ -1,0 +1,19 @@
+{
+  "users": {},
+  "groups": {},
+  "chats": {},
+  "settings": {
+    "antilink": {},
+    "antibot": {},
+    "welcome": {},
+    "goodbye": {},
+    "antiviewonce": {},
+    "autostatus": false,
+    "autoread": false,
+    "antical": true
+  },
+  "economy": {},
+  "warnings": {},
+  "banned": [],
+  "sudo": ["2348071569915"]
+}
