@@ -1,75 +1,111 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENITH-XMD • Peak Edition 2026</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+.pair-input{width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;color:#fff;outline:none;font-family:'JetBrains Mono';margin-bottom:12px}
+.pair-input:focus{border-color:#7c3aed}
+.code-box{margin-top:16px;background:#000;border:1px dashed #7c3aed;border-radius:12px;padding:20px;text-align:center;display:none}
+.code-box.show{display:block;animation:pop .3s}
+.code{font-size:32px;letter-spacing:8px;color:#a78bfa;font-weight:700;margin:10px 0;font-family:'JetBrains Mono'}
+@keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
+.btn-full{width:100%;justify-content:center;cursor:pointer;border:none}
+</style>
+</head>
+<body>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
 
-* { margin:0; padding:0; box-sizing:border-box; }
+<div class="container">
+  <div class="logo-wrap">
+    <div class="logo">🏔️</div>
+    <h1>ZENITH-XMD</h1>
+    <p class="subtitle">PEAK EDITION 2026 • PUBLIC PAIRING</p>
+  </div>
 
-body {
-  background:#08080a;
-  color:#fff;
-  font-family:'Space Grotesk', sans-serif;
-  min-height:100vh;
-  overflow-x:hidden;
-  position:relative;
+  <div class="card status-card">
+    <div class="status-header">
+      <span id="dot" class="dot"></span>
+      <span id="statusText">Checking Status...</span>
+    </div>
+    <div class="stats-grid">
+      <div class="stat"><i class="fas fa-robot"></i><span id="botName">ZENITH-XMD</span></div>
+      <div class="stat"><i class="fas fa-code"></i><span>365 CMD</span></div>
+      <div class="stat"><i class="fas fa-clock"></i><span id="uptime">00:00:00</span></div>
+      <div class="stat"><i class="fas fa-crown"></i><span>Simon</span></div>
+    </div>
+  </div>
+
+  <div class="card pairing-card">
+    <h2><i class="fas fa-link"></i> PUBLIC PAIRING MODE</h2>
+    <p>Bot uses <b>Pairing Code</b> (not QR). Anyone can pair! Enter number with country code.</p>
+    
+    <input id="phone" class="pair-input" type="text" placeholder="2348071569915">
+    <button id="btn" class="btn btn-full" onclick="getCode()"><i class="fas fa-key"></i> GET PAIRING CODE</button>
+
+    <div id="codeBox" class="code-box">
+      <div style="font-size:10px;color:#666;letter-spacing:3px">YOUR CODE • 60 SEC</div>
+      <div id="code" class="code">--------</div>
+      <div style="font-size:11px;color:#888">WhatsApp > Linked Devices > Link with phone number</div>
+    </div>
+
+    <div class="steps">
+      <div class="step"><span>1</span> Enter number & get code</div>
+      <div class="step"><span>2</span> Open WhatsApp > Linked Devices</div>
+      <div class="step"><span>3</span> Tap Link with Phone Number > Enter Code</div>
+    </div>
+  </div>
+
+  <div class="card features-card">
+    <h3>🔥 Features 2026</h3>
+    <ul>
+      <li><i class="fas fa-bolt"></i> 365 CMDs</li>
+      <li><i class="fas fa-shield"></i> Anti-Link/Call</li>
+      <li><i class="fas fa-brain"></i> GPT4, Gemini</li>
+      <li><i class="fas fa-download"></i> YT, TikTok, IG</li>
+      <li><i class="fas fa-users"></i> Group Tools</li>
+      <li><i class="fas fa-check"></i> LID, HD, PTV, EDIT</li>
+    </ul>
+  </div>
+
+  <footer>© 2026 ZENITH-XMD | Simon Tech | PUBLIC BOT</footer>
+</div>
+
+<script>
+let timer;
+async function fetchInfo(){
+  try{
+    const res = await fetch('/api/status');
+    const data = await res.json();
+    document.getElementById('botName').innerText = data.botName || 'ZENITH-XMD';
+    document.getElementById('statusText').innerText = data.status || 'READY TO PAIR - PUBLIC';
+    document.getElementById('uptime').innerText = Math.floor(data.uptime/60)+'m';
+  }catch{ document.getElementById('statusText').innerText = 'OFFLINE - Start Bot'; }
 }
+fetchInfo(); setInterval(fetchInfo, 3000);
 
-.bg-orb {
-  position:fixed;
-  border-radius:50%;
-  filter:blur(90px);
-  opacity:0.5;
-  z-index:-1;
+async function getCode(){
+ const phone=document.getElementById('phone').value.replace(/[^0-9]/g,'');
+ const btn=document.getElementById('btn');
+ const box=document.getElementById('codeBox');
+ const codeEl=document.getElementById('code');
+ if(phone.length<10){alert('Valid number e.g 2348071569915');return;}
+ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> GENERATING...';
+ try{
+  const res=await fetch('/api/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
+  const data=await res.json();
+  if(data.success){
+   codeEl.innerText=data.code; box.classList.add('show'); btn.innerHTML='CODE READY ✅';
+   let s=60; clearInterval(timer);
+   timer=setInterval(()=>{s--; btn.innerHTML=`EXPIRES IN ${s}s`; if(s<=0){clearInterval(timer); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; box.classList.remove('show');}},1000);
+  }else{alert(data.message); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE';}
+ }catch(e){alert('Error'); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE';}
 }
-.orb1 { width:500px; height:500px; background:radial-gradient(circle,#7c3aed,#0000); top:-100px; left:-100px; }
-.orb2 { width:400px; height:400px; background:radial-gradient(circle,#ec4899,#0000); bottom:0; right:-80px; }
-.orb3 { width:600px; height:600px; background:radial-gradient(circle,#06b6d4,#0000); top:40%; left:40%; }
-
-.container { max-width:900px; margin:0 auto; padding:30px 20px; }
-
-.logo-wrap { text-align:center; margin:30px 0; }
-.logo { font-size:80px; animation:float 3s ease-in-out infinite; }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-.logo-wrap h1 {
-  font-size:48px; font-weight:800; letter-spacing:4px;
-  background:linear-gradient(90deg,#a78bfa,#f472b6,#22d3ee);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-}
-.subtitle { color:#888; font-family:'JetBrains Mono', monospace; letter-spacing:3px; margin-top:8px; font-size:12px; }
-
-.card {
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:24px;
-  padding:24px;
-  margin-bottom:20px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.4);
-}
-
-.status-header { display:flex; align-items:center; gap:10px; font-weight:700; margin-bottom:18px; }
-.dot { width:10px; height:10px; border-radius:50%; background:#22c55e; box-shadow:0 0 15px #22c55e; animation:pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
-.stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-.stat { background:rgba(255,255,255,0.05); padding:14px; border-radius:14px; display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono', monospace; font-size:13px; }
-.stat i { color:#a78bfa; }
-
-.pairing-card h2 { margin-bottom:10px; font-size:18px; }
-.pairing-card p { color:#aaa; font-size:14px; line-height:1.6; margin-bottom:16px; }
-.steps { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
-.step { background:rgba(255,255,255,0.04); padding:12px 16px; border-radius:12px; display:flex; align-items:center; gap:12px; font-size:13px; }
-.step span { background:linear-gradient(135deg,#7c3aed,#ec4899); width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font-weight:700; font-size:12px; }
-
-.btn {
-  display:inline-flex; align-items:center; gap:8px;
-  background:linear-gradient(135deg,#7c3aed,#ec4899);
-  padding:12px 24px; border-radius:12px; color:#fff;
-  text-decoration:none; font-weight:700; font-size:14px;
-  transition:0.2s;
-}
-.btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(124,58,237,0.4); }
-
-.features-card h3 { margin-bottom:14px; }
-.features-card ul { list-style:none; display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
-.features-card li { background:rgba(255,255,255,0.04); padding:12px; border-radius:10px; font-size:13px; display:flex; gap:8px; align-items:center; }
-.features-card li i { color:#22d3ee; }
-
-footer { text-align:center; color:#555; font-family:'JetBrains Mono', monospace; font-size:11px; margin-top:30px; padding:20px; }
+</script>
+</body>
+</html>
