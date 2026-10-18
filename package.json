@@ -1,7 +1,7 @@
 {
   "name": "zenith-xmd",
   "version": "1.0.0",
-  "description": "ZENITH-XMD - Peak Edition 2026 - 200 Commands Only",
+  "description": "ZENITH-XMD - Peak Edition 2026 - WhatsApp pairing + Render support",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
@@ -9,10 +9,11 @@
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
-    "pino": "^8.16.2",
-    "chalk": "^4.1.2",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
-    "qrcode-terminal": "^0.12.0",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "pino": "^8.16.2",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1"
   }
 }
