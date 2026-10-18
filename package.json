@@ -1,7 +1,7 @@
 {
   "name": "zenith-xmd",
-  "version": "1.0.0",
-  "description": "ZENITH-XMD • Peak Edition 2026 • Pairing Code • 300 CMD • By Simon",
+  "version": "2.0.0",
+  "description": "ZENITH-XMD • Peak Edition 2026 • Pairing Code • 365 CMD • iOS • By Simon • PUBLIC",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
@@ -12,21 +12,27 @@
     "whatsapp-bot",
     "baileys",
     "pairing-code",
-    "simon-tech"
+    "2026",
+    "simon-tech",
+    "ios"
   ],
   "author": "Simon",
   "license": "MIT",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
-    "pino": "^8.16.2",
-    "express": "^4.18.2",
+    "pino": "^9.4.0",
+    "express": "^4.19.2",
     "fs-extra": "^11.2.0",
     "chalk": "^4.1.2",
-    "axios": "^1.6.7",
-    "dotenv": "^16.3.1",
-    "file-type": "^18.5.0",
-    "moment-timezone": "^0.5.44",
-    "node-fetch": "^2.6.7"
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "file-type": "^19.0.0",
+    "moment-timezone": "^0.5.45",
+    "node-fetch": "^2.7.0",
+    "qrcode-terminal": "^0.12.0",
+    "ws": "^8.17.0",
+    "jimp": "^0.22.10",
+    "yt-search": "^2.11.1"
   },
   "engines": {
     "node": ">=18.0.0"
