@@ -9,13 +9,12 @@ async execute(m,{sock,from}){
   if(!quoted) {
     return await sock.sendMessage(from,{text:"❌ *Reply a ViewOnce image/video with .vv*\n\nExample: Reply ViewOnce then type .vv"}, {quoted:m});
   }
-  const viewOnce = quoted.viewOnceMessage || quoted.viewOnceMessageV2 || quoted.viewOnceMessageV2Extension || quoted.viewOnceMessageV2?.message?.viewOnceMessageV2;
-  const actual = quoted.viewOnceMessage || quoted.viewOnceMessageV2;
+  const actual = quoted.viewOnceMessage || quoted.viewOnceMessageV2 || quoted.viewOnceMessageV2Extension;
   if(!actual) {
     return await sock.sendMessage(from,{text:"❌ This is not a ViewOnce message"}, {quoted:m});
   }
   const inner = actual.message;
-  if(!inner) return m.reply("Failed to unlock");
+  if(!inner) return await sock.sendMessage(from,{text:"Failed to unlock"}, {quoted:m});
   const type = Object.keys(inner)[0];
   const content = inner[type];
   if(content.viewOnce) delete content.viewOnce;
@@ -36,13 +35,16 @@ async execute(m,{sock,from}){
 name: "vv2", 
 alias: ["rvo2","vvv2"], 
 category: "vv",
+desc: "VV2 unlock",
 async execute(m,{sock,from}){
-  const q = m.message.extendedTextMessage?.contextInfo?.quotedMessage?.viewOnceMessageV2?.message || 
-            m.message.extendedTextMessage?.contextInfo?.quotedMessage?.viewOnceMessage?.message;
-  if(!q) return m.reply("❌ Reply ViewOnce with .vv2");
+  const quoted = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
+  if(!quoted) return await sock.sendMessage(from,{text:"❌ Reply ViewOnce with .vv2"}, {quoted:m});
+  const q = quoted.viewOnceMessageV2?.message || quoted.viewOnceMessage?.message || quoted.viewOnceMessageV2Extension?.message;
+  if(!q) return await sock.sendMessage(from,{text:"❌ Reply ViewOnce with .vv2"}, {quoted:m});
   const type = Object.keys(q)[0];
   const content = q[type];
   if(content.viewOnce) delete content.viewOnce;
+  if(content.viewOnceV2) delete content.viewOnceV2;
   const mediaType = type.replace('Message','');
   await sock.sendMessage(from,{[mediaType]: content, caption:`🔓 VV2 Unlocked ${mediaType}`}, {quoted:m});
 }
@@ -51,14 +53,15 @@ async execute(m,{sock,from}){
 name: "vv3", 
 alias: ["rvo3","audiovv"], 
 category: "vv",
+desc: "Audio VV unlock",
 async execute(m,{sock,from}){
   const quoted = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-  if(!quoted) return m.reply("🔓 *VV3 - Audio ViewOnce Unlocker*\nReply an audio viewonce with .vv3");
-  const vm = quoted.viewOnceMessageV2 || quoted.viewOnceMessage;
-  if(!vm) return m.reply("Not ViewOnce audio");
+  if(!quoted) return await sock.sendMessage(from,{text:"🔓 *VV3 - Audio ViewOnce Unlocker*\nReply an audio viewonce with .vv3"}, {quoted:m});
+  const vm = quoted.viewOnceMessageV2 || quoted.viewOnceMessage || quoted.viewOnceMessageV2Extension;
+  if(!vm) return await sock.sendMessage(from,{text:"Not ViewOnce audio"}, {quoted:m});
   const inner = vm.message;
   const content = inner.audioMessage || inner.voiceMessage || Object.values(inner)[0];
-  if(content.viewOnce) delete content.viewOnce;
+  if(content && content.viewOnce) delete content.viewOnce;
   await sock.sendMessage(from,{audio: content, mimetype:'audio/mp4', ptt:true}, {quoted:m});
 }
 },
@@ -66,7 +69,24 @@ async execute(m,{sock,from}){
 name: "saveviewonce", 
 alias: ["svv","savevv"], 
 category: "vv",
+desc: "Save ViewOnce",
 async execute(m,{sock,from}){
   const q = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-  if(!q) return m.reply("❌ Reply ViewOnce to save");
-  const vm = q.viewOnceMessage
+  if(!q) return await sock.sendMessage(from,{text:"❌ Reply ViewOnce to save"}, {quoted:m});
+  const vm = q.viewOnceMessage || q.viewOnceMessageV2 || q.viewOnceMessageV2Extension;
+  if(!vm) return await sock.sendMessage(from,{text:"❌ Not a ViewOnce"}, {quoted:m});
+  const inner = vm.message;
+  const type = Object.keys(inner)[0];
+  const content = inner[type];
+  if(content.viewOnce) delete content.viewOnce;
+  if(content.viewOnceV2) delete content.viewOnceV2;
+  if(type === 'imageMessage') {
+    await sock.sendMessage(from,{image: content, caption:"💾 SAVED - ZENITH XMD"}, {quoted:m});
+  } else if(type === 'videoMessage') {
+    await sock.sendMessage(from,{video: content, caption:"💾 SAVED VIDEO"}, {quoted:m});
+  } else {
+    await sock.sendMessage(from,{forward: inner}, {quoted:m});
+  }
+}
+}
+];
