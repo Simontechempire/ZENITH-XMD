@@ -6,12 +6,12 @@ module.exports = [
 name: "menu",
 alias: ["help", "list", "commands"],
 category: "general",
-desc: "Show full bot menu",
+desc: "Show full bot menu with image & buttons",
 async execute(m, { sock, from, plugins }) {
   const uptime = runtime(process.uptime());
   const totalCmds = plugins.size;
 
-  const menuText = `╭─〘 🏔️ ${settings.botName} 〙─
+  const caption = `╭─〘 🏔️ ${settings.botName} 〙─
 │
 │ *BOT INFO*
 │ • Bot: ${settings.botName}
@@ -26,86 +26,79 @@ async execute(m, { sock, from, plugins }) {
 ╰─━━━━━━━━━━━━━━━━━
 
 ╭─〘 MODERATOR (50) 〙
-│ • kick • add • promote • demote
-│ • warn • unwarn • mute • unmute
-│ • ban • unban • delete • pin
-│ • tagadmin • approve • requests
-│ • tagall • hidetag • out
+│ kick • add • promote • demote • warn
+│ mute • ban • delete • tagall • hidetag
 ╰─
 
 ╭─〘 GROUP (50) 〙
-│ • ginfo • setname • setdesc • setppgc
-│ • open • close • link • revoke • poll
-│ • welcome • goodbye • antilink
-│ • antitag • antibot • etc
+│ ginfo • setname • setdesc • open • close
+│ link • poll • welcome • goodbye
 ╰─
 
 ╭─〘 AUTO (50) 〙
-│ • autostatus • autostatusview
-│ • autoread • autoview • autolike
-│ • autoreact • autotyping
-│ • autorecording • autopresence
-│ • autobio • autowelcome • autogoodbye
-│ • autogreet • autotranslate • etc
+│ autostatus • autoread • autolike
+│ autotyping • autopresence • autobio
+│ autowelcome • autogreet • autotranslate
 ╰─
 
 ╭─〘 ANTI (50) 〙
-│ • antilink • antibot • antiforeign
-│ • antispam • antivirtex • antidelete
-│ • antiviewonce • antisticker
-│ • anticall • antifake • etc
+│ antilink • antibot • antispam
+│ antivirtex • antidelete • antisticker
 ╰─
 
 ╭─〘 OWNER (50) 〙
-│ • restart • broadcast • block • eval
-│ • mode • public • self • setpp
-│ • setbio • join • leave • etc
+│ restart • broadcast • block • eval
+│ mode • public • self • setpp • join
 ╰─
 
-╭─〘 SETTINGS (10) 〙
-│ • setprefix • setbotname • settings
-│ • setowner • autoblock • anticall
+╭─〘 AI (10) • TOOLS (20) • VV (5) 〙
+│ gpt • gemini • imagine • sticker
+│ toimg • vv • bug45 • etc
 ╰─
 
-╭─〘 VV (5) 〙
-│ • vv • vv2 • vv3 • saveviewonce • antivv
-╰─
-
-╭─〘 BUG (45) 〙
-│ • bug1 • bug2 • bug3 • ... bug45
-│ (Safe Crash • Invisible)
-╰─
-
-╭─〘 AI (10) 〙
-│ • gpt • gemini • imagine • flux
-│ • blackbox • llama • mistral • dalle
-╰─
-
-╭─〘 TOOLS (20) 〙
-│ • sticker • toimg • tourl • qr
-│ • calc • translate • weather
-│ • shorturl • remini • etc
-╰─
-
-> Type *${settings.prefix}allmenu* for full ${totalCmds} list
-> Type *${settings.prefix}ping* to check speed
-
-© 2026 ${settings.botName} PEAK by ${settings.ownerName}
+> © 2026 ${settings.botName} PEAK by ${settings.ownerName}
 `;
 
-  await sock.sendMessage(from, { text: menuText }, { quoted: m });
+  const image = settings.menuImage || settings.botImage || "https://files.catbox.moe/2y4q3b.jpg";
+
+  const buttons = [
+    {
+      buttonId: `${settings.prefix}allmenu`,
+      buttonText: { displayText: "📜 FULL MENU" },
+      type: 1
+    },
+    {
+      buttonId: `${settings.prefix}ping`,
+      buttonText: { displayText: "⚡ SPEED" },
+      type: 1
+    },
+    {
+      buttonId: `${settings.prefix}owner`,
+      buttonText: { displayText: "👑 OWNER" },
+      type: 1
+    }
+  ];
+
+  await sock.sendMessage(from, {
+    image: { url: image },
+    caption: caption,
+    footer: `> Type ${settings.prefix}allmenu for all ${totalCmds} commands`,
+    buttons: buttons,
+    headerType: 4
+  }, { quoted: m });
 }
 },
 {
 name: "allmenu",
 alias: ["fullmenu", "340menu", "full"],
 category: "general",
-desc: "Show all commands",
+desc: "Show all commands with image",
 async execute(m, { sock, from, plugins }) {
   const uptime = runtime(process.uptime());
+  const image = settings.menuImage || settings.botImage || "https://files.catbox.moe/2y4q3b.jpg";
+
   let text = `*╭─〘 ${settings.botName} FULL MENU 〙─*\n`;
-  text += `*│ Total: ${plugins.size} Commands | Uptime: ${uptime}*\n`;
-  text += `*╰─*\n\n`;
+  text += `*│ Total: ${plugins.size} | Uptime: ${uptime}*\n*╰─*\n\n`;
   
   const categories = {};
   for (let [name, cmd] of plugins) {
@@ -128,15 +121,27 @@ async execute(m, { sock, from, plugins }) {
     text += `╰─\n\n`;
   }
   
-  text += `> © 2026 ${settings.botName} | Prefix: ${settings.prefix}`;
+  text += `> © 2026 ${settings.botName}`;
 
+  // Send as image + text to avoid long caption cut
   if (text.length > 4000) {
-    const parts = text.match(/[\s\S]{1,4000}/g);
+    await sock.sendMessage(from, {
+      image: { url: image },
+      caption: text.slice(0, 4000),
+      footer: `Full ${plugins.size} commands`
+    }, { quoted: m });
+    
+    const remaining = text.slice(4000);
+    const parts = remaining.match(/[\s\S]{1,4000}/g);
     for (let part of parts) {
       await sock.sendMessage(from, { text: part }, { quoted: m });
     }
   } else {
-    await sock.sendMessage(from, { text }, { quoted: m });
+    await sock.sendMessage(from, {
+      image: { url: image },
+      caption: text,
+      footer: `Prefix: ${settings.prefix} | ${settings.botName}`
+    }, { quoted: m });
   }
 }
 }
