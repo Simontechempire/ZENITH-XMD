@@ -15,8 +15,7 @@ function toggleReply(m, name, isOn) {
 }
 
 function checkOwner(m) {
-  // Replace with your real owner check
-  const isOwner = m.isOwner || global.OWNER?.includes(m.sender) || true; // set true for test
+  const isOwner = m.isOwner || global.OWNER?.includes(m.sender) || true;
   if (!isOwner) {
     m.reply(`*👑 You are not my owner*`);
     return false;
@@ -35,21 +34,22 @@ function checkAdmin(m) {
 
 module.exports = [
 
-// 1-10 STATUS
+// STATUS - View status automatically
 {
 name: "autostatus", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
-  const db = getDB(); const on = args[0]=='on'; db.settings.autostatus = on;
+  const on = args[0]=='on'; getDB().settings.autostatus = on;
   await toggleReply(m, "Auto Status View", on);
 }
 },
 {
 name: "autostatusview", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
-  const db = getDB(); const on = args[0]=='on'; db.settings.autostatusview = on;
+  const on = args[0]=='on'; getDB().settings.autostatusview = on;
   await toggleReply(m, "Auto Status View2", on);
 }
 },
+// STATUS REACT
 {
 name: "autostatusreact", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
@@ -57,6 +57,7 @@ name: "autostatusreact", category: "auto", async execute(m,{args}){
   await toggleReply(m, "Auto Status React", on);
 }
 },
+// STATUS LIKE
 {
 name: "autostatuslike", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
@@ -75,9 +76,10 @@ name: "autostatusseen", category: "auto", async execute(m,{args}){
 name: "autostory", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autostory = on;
-  await toggleReply(m, "Auto Story", on);
+  await toggleReply(m, "Auto Story View", on);
 }
 },
+// COMMENT, SHARE, POST
 {
 name: "autocomment", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
@@ -107,7 +109,7 @@ name: "autobroadcast", category: "auto", async execute(m,{args}){
 }
 },
 
-// 11-20 READ & LIKE
+// READ & LIKE - YOUR EXPLANATION: blue tick all msgs
 {
 name: "autoread", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
@@ -150,36 +152,38 @@ name: "autoreact2", category: "auto", async execute(m,{args}){
   await toggleReply(m, "Auto React2", on);
 }
 },
+
+// REPLY - YOUR EXPLANATION: reply hey to every NEW DM only
 {
 name: "autoreply", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autoreply = on;
-  await toggleReply(m, "Auto Reply", on);
+  await toggleReply(m, "Auto Reply (hey to new DM only)", on);
 }
 },
 {
 name: "autorespond", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autorespond = on;
-  await toggleReply(m, "Auto Respond", on);
+  await toggleReply(m, "Auto Respond (hey to new DM)", on);
 }
 },
 {
 name: "autoresponse", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autoresponse = on;
-  await toggleReply(m, "Auto Response", on);
+  await toggleReply(m, "Auto Response (hey to new DM)", on);
 }
 },
 {
 name: "autoanswer", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autoanswer = on;
-  await toggleReply(m, "Auto Answer", on);
+  await toggleReply(m, "Auto Answer (hey to new DM)", on);
 }
 },
 
-// 21-30 PRESENCE
+// PRESENCE - YOUR EXPLANATION: show typing/recording/online 24/7 everywhere
 {
 name: "autobio", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
@@ -198,21 +202,21 @@ name: "autobio2", category: "auto", async execute(m,{args}){
 name: "autotyping", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autotyping = on;
-  await toggleReply(m, "Auto Typing", on);
+  await toggleReply(m, "Auto Typing 24/7 everywhere", on);
 }
 },
 {
 name: "autorecording", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autorecording = on;
-  await toggleReply(m, "Auto Recording", on);
+  await toggleReply(m, "Auto Recording 24/7 everywhere", on);
 }
 },
 {
 name: "autopresence", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autopresence = on;
-  await toggleReply(m, "Auto Presence", on);
+  await toggleReply(m, "Auto Presence Online 24/7", on);
 }
 },
 {
@@ -222,48 +226,52 @@ name: "autosticker", category: "auto", async execute(m,{args}){
   await toggleReply(m, "Auto Sticker", on);
 }
 },
+// TRANSLATE - YOUR EXPLANATION: translate every non-English for DM + Groups
 {
 name: "autotranslate", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autotranslate = on;
-  await toggleReply(m, "Auto Translate", on);
+  await toggleReply(m, "Auto Translate DM+Groups", on);
 }
 },
+// AI DM - YOUR EXPLANATION: reply hey to new DM
 {
 name: "autoai", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autoai = on;
-  await toggleReply(m, "Auto AI DM", on);
+  await toggleReply(m, "Auto AI DM (hey to new DM)", on);
 }
 },
 {
 name: "autochat", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autochat = on;
-  await toggleReply(m, "Auto Chat", on);
+  await toggleReply(m, "Auto Chat (hey to new DM)", on);
 }
 },
+// GREET - YOUR EXPLANATION: Good morning/afternoon/evening fans to all groups admin+member based on time
 {
 name: "autogreet", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autogreet = on;
-  await toggleReply(m, "Auto Greet", on);
+  await toggleReply(m, "Auto Greet All Groups", on);
 }
 },
 
-// 31-40 WELCOME & LEVEL
+// WELCOME - YOUR EXPLANATION: welcome every new user in ANY group where I'm admin+member
 {
 name: "autowelcome", category: "auto", async execute(m,{from,args}){
   if(!checkAdmin(m)) return;
   const db = getDB(); db.groups[from]=db.groups[from]||{}; const on = args[0]=='on'; db.groups[from].autowelcome = on;
-  await toggleReply(m, "Auto Welcome", on);
+  await toggleReply(m, "Auto Welcome All Groups", on);
 }
 },
+// GOODBYE - YOUR EXPLANATION: goodbye every user wey comot for ANY group
 {
 name: "autogoodbye", category: "auto", async execute(m,{from,args}){
   if(!checkAdmin(m)) return;
   const db = getDB(); db.groups[from]=db.groups[from]||{}; const on = args[0]=='on'; db.groups[from].autogoodbye = on;
-  await toggleReply(m, "Auto Goodbye", on);
+  await toggleReply(m, "Auto Goodbye All Groups", on);
 }
 },
 {
@@ -322,8 +330,6 @@ name: "autodl", alias: ["autodownload"], category: "auto", async execute(m,{args
   await toggleReply(m, "Auto DL Status", on);
 }
 },
-
-// 41-50 EXTRA AUTO
 {
 name: "autodownload", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
@@ -338,11 +344,12 @@ name: "autoforward", category: "auto", async execute(m,{args}){
   await toggleReply(m, "Auto Forward", on);
 }
 },
+// DELETE - YOUR EXPLANATION: block new DMs from new people
 {
 name: "autodelete", category: "auto", async execute(m,{args}){
   if(!checkOwner(m)) return;
   const on = args[0]=='on'; getDB().settings.autodelete = on;
-  await toggleReply(m, "Auto Delete", on);
+  await toggleReply(m, "Anti New DM Block", on);
 }
 },
 {
