@@ -1,9 +1,17 @@
 /**
  * ZENITH-XMD PEAK V2
- * Entry - Fixed for Render + Koyeb + Railway
- * ARRAY + Single + Recursive Support
+ * Entry - Optimized for Render + Katabump FAST REPLY
  */
 require('dotenv').config();
+
+// ⚡ SPEED BOOST - MUST BE FIRST
+try { 
+  require('./lib/renderBoost').init(); 
+  console.log('⚡ Speed booster loaded in index.js');
+} catch (e) { 
+  console.log('⚠️ renderBoost not found, create lib/renderBoost.js');
+}
+
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
@@ -31,11 +39,18 @@ console.log(chalk.cyan.bold(`
 ╰━━━━━━━━━━━━━━━━━━━━━━━━━━╯
 `));
 
-// We leave plugin loading to connection.js to avoid duplicate
-// connection.js already does recursive ARRAY scan
 console.log(chalk.green(`🚀 Starting ${config.botName}...`));
 console.log(chalk.yellow(`📂 Plugins will be wired inside connection.js`));
 console.log(chalk.yellow(`🌐 Port: ${config.PORT}\n`));
+
+// Auto restart if memory too high (Render 512MB fix)
+setInterval(() => {
+  const mem = process.memoryUsage().heapUsed / 1024 / 1024;
+  if (mem > 450) {
+    console.log(chalk.red(`⚠️ High memory ${mem.toFixed(0)}MB - cleaning...`));
+    if (global.gc) global.gc();
+  }
+}, 60000);
 
 startConnection().catch(err => {
   console.error(chalk.red('❌ Failed to start:'), err);
@@ -43,4 +58,4 @@ startConnection().catch(err => {
 });
 
 process.on('uncaughtException', (e) => console.log(chalk.red('Uncaught:'), e.message));
-process.on('unhandledRejection', (e) => console.log(chalk.yellow('Unhandled:'), e.message));
+process.on('unhandledRejection', (e) => console.log(chalk.yellow('Unhandled:'), e?.message || e));
