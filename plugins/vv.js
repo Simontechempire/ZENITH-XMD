@@ -1,128 +1,153 @@
 module.exports = [
 {
 name: "vv", 
-alias: ["rvo","viewonce","antiviewonce1"], 
+alias: ["rvo","viewonce","antiviewonce","openviewonce"], 
 category: "vv", 
-desc: "Unlock ViewOnce",
+desc: "Unlock ViewOnce image/video/audio",
 async execute(m,{sock,from}){
   try {
-    const quoted = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-    if(!quoted) {
-      return await sock.sendMessage(from,{text:"❌ *Reply a ViewOnce image/video with .vv*"}, {quoted:m});
-    }
-    const actual = quoted.viewOnceMessage || quoted.viewOnceMessageV2 || quoted.viewOnceMessageV2Extension;
-    if(!actual) {
-      return await sock.sendMessage(from,{text:"❌ This is not a ViewOnce message\n> *I would*\n> *Only group admin are authorised to use this commands* - no, just reply correctly"}, {quoted:m});
-    }
-    const inner = actual.message;
-    if(!inner) return await sock.sendMessage(from,{text:"❌ Failed to unlock"}, {quoted:m});
+    if(!m.quoted) return m.reply("❌ *Reply a ViewOnce message with .vv*\nEx: Reply ViewOnce image then type .vv");
     
-    const type = Object.keys(inner)[0];
-    const content = inner[type];
-    if(content.viewOnce) delete content.viewOnce;
-    if(content.viewOnceV2) delete content.viewOnceV2;
+    const q = m.quoted.message;
+    const viewOnce = q?.viewOnceMessage || q?.viewOnceMessageV2 || q?.viewOnceMessageV2Extension;
+    if(!viewOnce) return m.reply("❌ This is not a ViewOnce message");
 
-    if(type === 'imageMessage') {
-      await sock.sendMessage(from,{image: content, caption:"🔓 *VV UNLOCKED - ZENITH-XMD*\n> *Successful*\n> Peak by Simon"}, {quoted:m});
-    } else if(type === 'videoMessage') {
-      await sock.sendMessage(from,{video: content, caption:"🔓 *VV VIDEO UNLOCKED*\n> *Success*"}, {quoted:m});
-    } else if(type === 'audioMessage') {
-      await sock.sendMessage(from,{audio: content, mimetype:'audio/ogg; codecs=opus', ptt:true}, {quoted:m});
-      await sock.sendMessage(from,{text:"*✅ Successful* - Voice unlocked"}, {quoted:m});
+    const inner = viewOnce.message;
+    const type = Object.keys(inner)[0];
+    const media = inner[type];
+
+    // Remove viewonce flags
+    if(media.viewOnce) delete media.viewOnce;
+    if(media.viewOnceV2) delete media.viewOnceV2;
+
+    // Try download properly
+    const buffer = await sock.downloadMediaMessage({ message: inner });
+    
+    if(type === 'imageMessage'){
+      await sock.sendMessage(from,{image: buffer || media, caption:`*🔓 VV UNLOCKED*\n> Type: Image\n> By ${global.db?.settings?.botName || "ZENITH-XMD PEAK"}`}, {quoted:m});
+    } else if(type === 'videoMessage'){
+      await sock.sendMessage(from,{video: buffer || media, caption:`*🔓 VV VIDEO UNLOCKED*\n> Success ✅`}, {quoted:m});
+    } else if(type === 'audioMessage'){
+      await sock.sendMessage(from,{audio: buffer || media, mimetype:'audio/ogg; codecs=opus', ptt:true}, {quoted:m});
+      await sock.sendMessage(from,{text:"✅ *Voice ViewOnce unlocked*"}, {quoted:m});
     } else {
-      await sock.sendMessage(from,{text:"🔓 ViewOnce unlocked - *Updated*"}, {quoted:m});
+      await sock.sendMessage(from,{text:"✅ ViewOnce unlocked"}, {quoted:m});
     }
   } catch(e){
-    await sock.sendMessage(from,{text:`❌ VV Error: ${e.message}`},{quoted:m});
+    console.log(e);
+    m.reply(`❌ VV Error: ${e.message}\nTry .vv2`);
   }
 }
 },
 {
 name: "vv2", 
-alias: ["rvo2","vvv2"], 
+alias: ["rvo2","vvv2","viewonce2"], 
 category: "vv",
-desc: "VV2 unlock - alternative",
+desc: "VV2 - Alternative unlock with forward",
 async execute(m,{sock,from}){
   try {
-    const quoted = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-    if(!quoted) return await sock.sendMessage(from,{text:"❌ Reply ViewOnce with .vv2\n> *I would*"}, {quoted:m});
+    if(!m.quoted) return m.reply("❌ Reply ViewOnce with .vv2");
     
-    const vm = quoted.viewOnceMessageV2 || quoted.viewOnceMessage || quoted.viewOnceMessageV2Extension;
-    if(!vm) return await sock.sendMessage(from,{text:"❌ Not a ViewOnce\n> Only group admin are authorised to use this commands - No, just reply a VV"}, {quoted:m});
+    const q = m.quoted.message;
+    const vm = q?.viewOnceMessageV2 || q?.viewOnceMessage || q?.viewOnceMessageV2Extension;
+    if(!vm) return m.reply("❌ Not a ViewOnce - reply directly to the ViewOnce");
+
+    // Forward method - most stable for Baileys v6+
+    const inner = vm.message;
+    const type = Object.keys(inner)[0];
     
-    const q = vm.message;
-    if(!q) return await sock.sendMessage(from,{text:"❌ Failed"}, {quoted:m});
-    
-    const type = Object.keys(q)[0];
-    const content = q[type];
-    if(content.viewOnce) delete content.viewOnce;
-    if(content.viewOnceV2) delete content.viewOnceV2;
-    
-    const mediaType = type.replace('Message','');
-    if(mediaType === 'image' || mediaType === 'video'){
-      await sock.sendMessage(from,{[mediaType]: content, caption:`🔓 *VV2 Unlocked - ${mediaType}*\n> *Success*`}, {quoted:m});
-    } else {
-      await sock.sendMessage(from,{audio: content, mimetype:'audio/mp4', ptt:true}, {quoted:m});
-    }
+    // Force remove viewonce to allow forward
+    if(inner[type].viewOnce) inner[type].viewOnce = false;
+    if(inner[type].viewOnceV2) inner[type].viewOnceV2 = false;
+
+    await sock.sendMessage(from, { forward: vm }, { quoted: m });
+    await sock.sendMessage(from, { text: `*🔓 VV2 UNLOCKED - ${type.replace('Message','')}*\n✅ Forwarded successfully` }, { quoted: m });
+
   } catch(e){
-    await sock.sendMessage(from,{text:`❌ VV2 Error: ${e.message}`},{quoted:m});
+    m.reply(`❌ VV2 Error: ${e.message}`);
   }
 }
 },
 {
 name: "vv3", 
-alias: ["rvo3","audiovv"], 
+alias: ["rvo3","audiovv","voicevv"], 
 category: "vv",
-desc: "Audio VV unlock",
+desc: "Audio ViewOnce unlock",
 async execute(m,{sock,from}){
   try {
-    const quoted = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-    if(!quoted) return await sock.sendMessage(from,{text:"🔓 *VV3 - Audio ViewOnce Unlocker*\nReply an audio viewonce with .vv3\n> *I would*"}, {quoted:m});
-    
-    const vm = quoted.viewOnceMessageV2 || quoted.viewOnceMessage || quoted.viewOnceMessageV2Extension;
-    if(!vm) return await sock.sendMessage(from,{text:"❌ Not ViewOnce audio\n> You are not my owner? No - just reply correctly"}, {quoted:m});
-    
+    if(!m.quoted) return m.reply("🔓 *VV3 - Audio VV*\nReply an audio viewonce with .vv3");
+
+    const q = m.quoted.message;
+    const vm = q?.viewOnceMessageV2 || q?.viewOnceMessage || q?.viewOnceMessageV2Extension;
+    if(!vm) return m.reply("❌ Not a ViewOnce audio");
+
     const inner = vm.message;
-    const content = inner.audioMessage || inner.pttMessage || Object.values(inner)[0];
-    if(content?.viewOnce) delete content.viewOnce;
-    
-    await sock.sendMessage(from,{audio: content, mimetype:'audio/ogg; codecs=opus', ptt:true}, {quoted:m});
-    await sock.sendMessage(from,{text:"*✅ Successful* - Audio VV unlocked"}, {quoted:m});
+    const buffer = await sock.downloadMediaMessage({ message: inner });
+    const type = Object.keys(inner)[0];
+    const content = inner[type];
+
+    if(content.viewOnce) delete content.viewOnce;
+
+    await sock.sendMessage(from,{audio: buffer || content, mimetype:'audio/ogg; codecs=opus', ptt:true}, {quoted:m});
+    await sock.sendMessage(from,{text:"✅ *Audio VV unlocked successfully*"}, {quoted:m});
+
   } catch(e){
-    await sock.sendMessage(from,{text:`❌ VV3 Error: ${e.message}`},{quoted:m});
+    m.reply(`❌ VV3 Error: ${e.message}`);
   }
 }
 },
 {
 name: "saveviewonce", 
-alias: ["svv","savevv"], 
+alias: ["svv","savevv","save"], 
 category: "vv",
-desc: "Save ViewOnce permanently",
+desc: "Save ViewOnce to your DM",
 async execute(m,{sock,from}){
   try {
-    const q = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-    if(!q) return await sock.sendMessage(from,{text:"❌ Reply ViewOnce to save\n> *Updated*"}, {quoted:m});
+    if(!m.quoted) return m.reply("❌ Reply ViewOnce to save");
     
-    const vm = q.viewOnceMessage || q.viewOnceMessageV2 || q.viewOnceMessageV2Extension;
-    if(!vm) return await sock.sendMessage(from,{text:"❌ Not a ViewOnce"}, {quoted:m});
-    
+    const q = m.quoted.message;
+    const vm = q?.viewOnceMessage || q?.viewOnceMessageV2 || q?.viewOnceMessageV2Extension;
+    if(!vm) return m.reply("❌ Not a ViewOnce message");
+
     const inner = vm.message;
     const type = Object.keys(inner)[0];
     const content = inner[type];
+
     if(content.viewOnce) delete content.viewOnce;
     if(content.viewOnceV2) delete content.viewOnceV2;
-    
+
+    const buffer = await sock.downloadMediaMessage({ message: inner }).catch(()=>null);
+
     if(type === 'imageMessage') {
-      await sock.sendMessage(from,{image: content, caption:"💾 *SAVED - ZENITH XMD*\n> *Success*"}, {quoted:m});
+      await sock.sendMessage(from,{image: buffer || content, caption:`💾 *SAVED - ZENITH-XMD*\n> Permanent save ✅`}, {quoted:m});
+      await sock.sendMessage(m.sender,{image: buffer || content, caption:"💾 Your saved ViewOnce"}, {quoted:m}).catch(()=>{});
     } else if(type === 'videoMessage') {
-      await sock.sendMessage(from,{video: content, caption:"💾 *SAVED VIDEO*\n> *Successful*"}, {quoted:m});
+      await sock.sendMessage(from,{video: buffer || content, caption:"💾 *SAVED VIDEO* ✅"}, {quoted:m});
     } else {
-      await sock.sendMessage(from,{text:"💾 *Saved*\n> *Updated*"}, {quoted:m});
-      await sock.sendMessage(from,{forward: inner}, {quoted:m});
+      await sock.sendMessage(from,{forward: vm}, {quoted:m});
     }
+    m.reply("✅ *Saved successfully* - Also sent to your DM if possible");
   } catch(e){
-    await sock.sendMessage(from,{text:`❌ SaveVV Error: ${e.message}`},{quoted:m});
+    m.reply(`❌ SaveVV Error: ${e.message}`);
   }
+}
+},
+{
+name: "autovv", 
+alias: ["antivv","avv"], 
+category: "vv",
+desc: "Auto unlock all ViewOnce",
+async execute(m,{args}){
+  global.db.settings = global.db.settings || {};
+  if(!args[0]) return m.reply(`*🔓 AUTO VV*\n\nCurrent: ${global.db.settings.autovv ? "ON ✅" : "OFF ❌"}\n\nUse:\n.autovv on - Auto unlock all VV\n.autovv off - Disable`);
+  
+  if(args[0]==="on"){
+    global.db.settings.autovv = true;
+    m.reply("✅ Auto VV ON - All ViewOnce will be auto unlocked");
+  } else if(args[0]==="off"){
+    global.db.settings.autovv = false;
+    m.reply("❌ Auto VV OFF");
+  } else m.reply("Use .autovv on/off");
 }
 }
 ];
