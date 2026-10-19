@@ -11,11 +11,11 @@ async execute(m, { sock, from, plugins }) {
   const uptime = runtime(process.uptime());
   const totalCmds = plugins.size;
 
-  const caption = `╭─〘 🏔️ ${settings.botName} 〙─
+  const caption = `╭─〘 🐺 ${settings.botName} 〙─
 │
-│ *BOT INFO*
+│ *🐺 WOLF INFO*
 │ • Bot: ${settings.botName}
-│ • Owner: ${settings.ownerName}
+│ • Alpha: ${settings.ownerName}
 │ • Prefix: [ ${settings.prefix} ]
 │ • Version: ${settings.version}
 │ • Mode: Pairing Code
@@ -25,41 +25,42 @@ async execute(m, { sock, from, plugins }) {
 │
 ╰─━━━━━━━━━━━━━━━━━
 
-╭─〘 MODERATOR (50) 〙
+╭─〘 🐺 MODERATOR PACK (50) 〙
 │ kick • add • promote • demote • warn
 │ mute • ban • delete • tagall • hidetag
 ╰─
 
-╭─〘 GROUP (50) 〙
+╭─〘 🐾 GROUP PACK (50) 〙
 │ ginfo • setname • setdesc • open • close
 │ link • poll • welcome • goodbye
 ╰─
 
-╭─〘 AUTO (50) 〙
+╭─〘 🤖 AUTO HOWL (50) 〙
 │ autostatus • autoread • autolike
 │ autotyping • autopresence • autobio
 │ autowelcome • autogreet • autotranslate
 ╰─
 
-╭─〘 ANTI (50) 〙
+╭─〘 🚫 ANTI WOLF (50) 〙
 │ antilink • antibot • antispam
 │ antivirtex • antidelete • antisticker
 ╰─
 
-╭─〘 OWNER (50) 〙
+╭─〘 👑 ALPHA ONLY (50) 〙
 │ restart • broadcast • block • eval
 │ mode • public • self • setpp • join
 ╰─
 
-╭─〘 AI (10) • TOOLS (20) • VV (5) 〙
+╭─〘 🐺 AI WOLF (10) • TOOLS (20) • VV (5) 〙
 │ gpt • gemini • imagine • sticker
 │ toimg • vv • bug45 • etc
 ╰─
 
-> © 2026 ${settings.botName} PEAK by ${settings.ownerName}
+> © 2026 ${settings.botName} WOLF PACK by ${settings.ownerName}
+> 🔗 https://whatsapp.com/channel/0029Vb97vPwChq6GqI44n61S
 `;
 
-  const image = settings.menuImage || settings.botImage || "https://files.catbox.moe/2y4q3b.jpg";
+  const image = "https://files.catbox.moe/3zzdcg.jpg";
 
   const buttons = [
     {
@@ -95,9 +96,9 @@ category: "general",
 desc: "Show all commands with image",
 async execute(m, { sock, from, plugins }) {
   const uptime = runtime(process.uptime());
-  const image = settings.menuImage || settings.botImage || "https://files.catbox.moe/2y4q3b.jpg";
+  const image = "https://files.catbox.moe/3zzdcg.jpg";
 
-  let text = `*╭─〘 ${settings.botName} FULL MENU 〙─*\n`;
+  let text = `*╭─〘 🐺 ${settings.botName} FULL MENU 〙─*\n`;
   text += `*│ Total: ${plugins.size} | Uptime: ${uptime}*\n*╰─*\n\n`;
   
   const categories = {};
@@ -108,22 +109,22 @@ async execute(m, { sock, from, plugins }) {
   }
   
   const emojiMap = {
-    general: '📜', moderator: '🛡️', group: '👥',
+    general: '🐺', moderator: '🐺', group: '🐾',
     auto: '🤖', anti: '🚫', owner: '👑',
     settings: '⚙️', vv: '👁️', bug: '🐛',
-    ai: '🧠', tools: '🛠️', other: '📌'
+    ai: '🧠', tools: '🛠️', other: '🐺'
   };
   
   for (let cat in categories) {
-    const emoji = emojiMap[cat] || '📌';
+    const emoji = emojiMap[cat] || '🐺';
     text += `╭─〘 ${emoji} ${cat.toUpperCase()} (${categories[cat].length}) 〙\n`;
     text += `│ ${categories[cat].map(c => `${settings.prefix}${c}`).join(' • ')}\n`;
     text += `╰─\n\n`;
   }
   
-  text += `> © 2026 ${settings.botName}`;
+  text += `> © 2026 ${settings.botName} WOLF PACK\n`;
+  text += `> 🔗 https://whatsapp.com/channel/0029Vb97vPwChq6GqI44n61S`;
 
-  // Send as image + text to avoid long caption cut
   if (text.length > 4000) {
     await sock.sendMessage(from, {
       image: { url: image },
