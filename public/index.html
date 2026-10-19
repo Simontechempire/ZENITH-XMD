@@ -3,156 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZENITH-XMD • Peak Edition 2026</title>
+<title>ZENITH-XMD • Peak Edition V2</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#06060a;color:#fff;font-family:system-ui;min-height:100vh;padding:20px;position:relative;overflow-x:hidden}
-.bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.15}
-.orb1{width:400px;height:400px;background:#00ffff;top:-100px;left:-100px}
-.orb2{width:300px;height:300px;background:#ff00ff;bottom:100px;right:-50px}
-.orb3{width:250px;height:250px;background:#00ff88;top:50%;left:50%}
+body{background:#050507;color:#fff;font-family:system-ui,-apple-system;min-height:100vh;padding:18px;overflow-x:hidden}
+.bg-orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.18;pointer-events:none}
+.orb1{width:500px;height:500px;background:#00f0ff;top:-120px;left:-120px}
+.orb2{width:400px;height:400px;background:#ff00f0;bottom:0;right:-100px}
+.orb3{width:300px;height:300px;background:#00ff9d;top:40%;left:40%}
 .container{max-width:440px;margin:0 auto;position:relative;z-index:2}
-.logo-wrap{text-align:center;margin:30px 0 20px}
-.logo{font-size:40px}
-.logo-wrap h1{font-size:28px;letter-spacing:3px;margin:8px 0}
-.subtitle{color:#666;font-size:12px;letter-spacing:2px}
-.card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:16px;backdrop-filter:blur(10px)}
-.status-header{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:12px}
-.dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 10px #00ff88}
-.dot.offline{background:#ff0040;box-shadow:0 0 10px #ff0040}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:#00000050;padding:10px;border-radius:10px;font-size:12px;display:flex;align-items:center;gap:8px;color:#aaa}
-.stat i{color:#00ffff}
-.pairing-card h2{font-size:16px;margin-bottom:10px}
-.pairing-card p{font-size:13px;color:#888;margin-bottom:16px;line-height:1.5}
-.input-box{display:flex;gap:8px;margin-bottom:12px}
-.input-box input{flex:1;background:#000;border:1px solid #222;border-radius:10px;padding:14px;color:#fff;outline:none}
+.logo-wrap{text-align:center;margin:28px 0 18px}
+.logo{font-size:42px;filter:drop-shadow(0 0 20px #00ffff)}
+.logo-wrap h1{font-size:30px;letter-spacing:4px;font-weight:900;margin:8px 0}
+.subtitle{color:#555;font-size:11px;letter-spacing:3px;font-weight:600}
+.card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.09);border-radius:18px;padding:20px;margin-bottom:14px;backdrop-filter:blur(16px)}
+.status-header{display:flex;align-items:center;justify-content:space-between;font-size:13px}
+.left{display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;background:#00ff88;box-shadow:0 0 12px #00ff88;animation:pulse 2s infinite}
+.dot.offline{background:#ff1a4d;box-shadow:0 0 12px #ff1a4d}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stat{background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.05);padding:12px;border-radius:12px;font-size:12px;display:flex;align-items:center;gap:9px;color:#999}
+.stat b{color:#fff}
+.stat i{color:#00ffff;width:14px}
+.pairing-card h2{font-size:15px;letter-spacing:1px;margin-bottom:8px}
+.pairing-card p{font-size:13px;color:#666;margin-bottom:16px;line-height:1.5}
+.input-box{position:relative;margin-bottom:12px}
+.input-box input{width:100%;background:#000;border:1px solid #222;border-radius:12px;padding:15px 15px 15px 42px;color:#fff;outline:none;font-size:15px}
+.input-box i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#333}
 .input-box input:focus{border-color:#00ffff}
-.btn{width:100%;background:#fff;color:#000;border:none;border-radius:10px;padding:14px;font-weight:bold;cursor:pointer;transition:.2s}
-.btn:hover{background:#00ffff}
-.btn:disabled{background:#222;color:#555}
-.code-box{margin-top:16px;background:#000;border:1px dashed #00ffff;border-radius:12px;padding:16px;text-align:center;display:none}
-.code-box.show{display:block}
-.code{font-size:28px;letter-spacing:6px;color:#00ffff;font-weight:bold;margin:8px 0}
-.steps{margin:16px 0}
-.step{font-size:12px;color:#888;padding:8px 0;border-bottom:1px solid #111;display:flex;gap:10px}
-.step span{background:#111;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:10px;color:#00ffff}
+.btn{width:100%;background:#fff;color:#000;border:none;border-radius:12px;padding:15px;font-weight:800;letter-spacing:1px;cursor:pointer;transition:.2s}
+.btn:hover{background:#00ffff;transform:translateY(-1px)}
+.btn:disabled{background:#1a1a1a;color:#444}
+.btn-danger{background:transparent;border:1px solid #ff1a4d;color:#ff1a4d;margin-top:10px}
+.btn-danger:hover{background:#ff1a4d;color:#fff}
+.code-box{margin-top:16px;background:#000;border:1px dashed #00ffff;border-radius:14px;padding:18px;text-align:center;display:none}
+.code-box.show{display:block;animation:pop .3s}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.code{font-size:32px;letter-spacing:8px;color:#00ffff;font-weight:900;margin:10px 0;text-shadow:0 0 20px #00ffff}
+.steps{margin:16px 0 0}
+.step{font-size:12px;color:#666;padding:9px 0;border-bottom:1px solid #111;display:flex;gap:10px;align-items:center}
+.step:last-child{border:none}
+.step span{background:#0a0a0a;border:1px solid #222;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:10px;color:#00ffff;font-weight:700}
+.features-card h3{font-size:13px;margin-bottom:10px;letter-spacing:1px}
 .features-card ul{list-style:none}
-.features-card li{font-size:13px;color:#888;padding:8px 0;display:flex;gap:8px}
-.features-card li i{color:#00ff88}
-footer{text-align:center;color:#333;font-size:10px;margin-top:20px;padding:20px}
-.ascii{font-size:4px;line-height:5px;white-space:pre;color:#00ffff30;text-align:center;margin:10px 0}
+.features-card li{font-size:12.5px;color:#777;padding:8px 0;display:flex;gap:10px;border-bottom:1px solid #0f0f0f}
+.features-card li:last-child{border:none}
+.features-card li i{color:#00ff88;margin-top:2px}
+footer{text-align:center;color:#2a2a2a;font-size:10px;margin-top:18px;padding:18px;letter-spacing:1px}
+.online-badge{background:#00ff88;color:#000;font-size:9px;padding:3px 8px;border-radius:20px;font-weight:900;letter-spacing:1px}
 </style>
 </head>
 <body>
 <div class="bg-orb orb1"></div>
 <div class="bg-orb orb2"></div>
 <div class="bg-orb orb3"></div>
-
 <div class="container">
   <div class="logo-wrap">
-    <div class="logo">🏔️</div>
+    <div class="logo">⚡</div>
     <h1>ZENITH-XMD</h1>
-    <p class="subtitle">PEAK EDITION 2026 • PUBLIC PAIRING</p>
+    <p class="subtitle">PEAK EDITION V2 • 2026 • FAST MODE</p>
   </div>
 
-<div class="ascii">  ███████╗███████╗███╗   ██╗██╗████████╗██╗  ██╗
-  ╚══███╔╝██╔════╝████╗  ██║██║╚══██╔══╝██║  ██║
-    ███╔╝ █████╗  ██╔██╗ ██║██║   ██║   ███████║
-   ███╔╝  ██╔══╝  ██║╚██╗██║██║   ██║   ██╔══██║
-  ███████╗███████╗██║ ╚████║██║   ██║   ██║  ██║
-  ╚══════╝╚══════╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝  ╚═╝</div>
-
-  <div class="card status-card">
+  <div class="card">
     <div class="status-header">
-      <span id="dot" class="dot offline"></span>
-      <span id="statusText">Checking Status...</span>
+      <div class="left"><span id="dot" class="dot offline"></span><span id="statusText">Checking...</span></div>
+      <span id="onlineBadge" style="display:none" class="online-badge">ONLINE</span>
     </div>
     <div class="stats-grid">
-      <div class="stat"><i class="fas fa-robot"></i><span id="botName">ZENITH-XMD</span></div>
-      <div class="stat"><i class="fas fa-code"></i><span>365 CMD</span></div>
-      <div class="stat"><i class="fas fa-clock"></i><span id="uptime">00:00:00</span></div>
-      <div class="stat"><i class="fas fa-crown"></i><span>Simon</span></div>
+      <div class="stat"><i class="fas fa-robot"></i><span><b id="botName">ZENITH</b></span></div>
+      <div class="stat"><i class="fas fa-bolt"></i><span><b id="plugCount">0</b> CMDS</span></div>
+      <div class="stat"><i class="fas fa-circle" style="color:#00ff88"></i><span id="modeText">Public</span></div>
+      <div class="stat"><i class="fas fa-user-crown"></i><span>Simon</span></div>
     </div>
   </div>
 
   <div class="card pairing-card">
-    <h2><i class="fas fa-link"></i> PUBLIC PAIRING</h2>
-    <p>Anyone can pair! Enter your WhatsApp number with country code.</p>
-    
+    <h2><i class="fas fa-link"></i> PAIR DEVICE</h2>
+    <p id="pairDesc">Enter your number with country code. No + or space.</p>
     <div class="input-box">
+      <i class="fas fa-phone"></i>
       <input id="phone" type="text" placeholder="2348071569915">
     </div>
     <button id="btn" class="btn" onclick="getCode()"><i class="fas fa-key"></i> GET PAIRING CODE</button>
 
     <div id="codeBox" class="code-box">
-      <div style="font-size:10px;color:#666;letter-spacing:2px">YOUR CODE - VALID 60 SEC</div>
+      <div style="font-size:9px;color:#555;letter-spacing:3px">CODE VALID 60 SEC</div>
       <div id="code" class="code">--------</div>
-      <div style="font-size:11px;color:#888" id="codeInfo">WhatsApp > Linked Devices > Link with phone number</div>
+      <div style="font-size:11px;color:#555">WhatsApp > Linked Devices > Link a device > Link with phone number</div>
     </div>
 
     <div class="steps">
-      <div class="step"><span>1</span> Enter number & Get Code</div>
-      <div class="step"><span>2</span> WhatsApp > Linked Devices</div>
-      <div class="step"><span>3</span> Link with Phone Number > Enter Code</div>
+      <div class="step"><span>1</span> Get code & copy</div>
+      <div class="step"><span>2</span> Open WhatsApp</div>
+      <div class="step"><span>3</span> Linked Devices → Link with phone number</div>
     </div>
+    <button id="logoutBtn" class="btn btn-danger" onclick="logout()" style="display:none"><i class="fas fa-sign-out-alt"></i> LOGOUT & RESET</button>
   </div>
 
   <div class="card features-card">
-    <h3>🔥 Features</h3>
+    <h3>⚡ V2 UPGRADE</h3>
     <ul>
-      <li><i class="fas fa-bolt"></i> 365 Commands (2026)</li>
-      <li><i class="fas fa-shield"></i> Anti-Link, Anti-Call, Auto-Bio</li>
-      <li><i class="fas fa-brain"></i> AI - GPT4, Gemini, Imagine</li>
-      <li><i class="fas fa-download"></i> YT, TikTok, IG Downloader</li>
-      <li><i class="fas fa-users"></i> Group Admin Tools</li>
-      <li><i class="fas fa-check"></i> LID, HD, PTV, EDIT Support</li>
+      <li><i class="fas fa-rocket"></i> Fast Reply Mode - 0.5s (Render Optimized)</li>
+      <li><i class="fas fa-bolt"></i> 365+ Commands Wired</li>
+      <li><i class="fas fa-shield"></i> Anti-Delete, Anti-Link, Anti-Call</li>
+      <li><i class="fas fa-eye"></i> AutoVV + Status Skip for Speed</li>
+      <li><i class="fas fa-users"></i> Group Cache - No Lag</li>
+      <li><i class="fas fa-brain"></i> AI, Downloader, Tools</li>
     </ul>
   </div>
-
-  <footer>© 2026 ZENITH-XMD | Built by Simon | PUBLIC BOT</footer>
+  <footer>© 2026 ZENITH-XMD V2 | Built by Simon | RENDER FAST</footer>
 </div>
 
 <script>
 let timer;
 async function fetchInfo(){
   try{
-    const res = await fetch('/api/status');
-    const data = await res.json();
-    document.getElementById('botName').innerText = data.botName || 'ZENITH-XMD';
-    document.getElementById('statusText').innerText = data.isConnected ? 'ONLINE - Bot Linked' : data.status || 'READY TO PAIR';
-    document.getElementById('dot').className = data.isConnected ? 'dot' : 'dot';
-    document.getElementById('uptime').innerText = Math.floor(data.uptime/60)+'m';
-  }catch{
-    document.getElementById('statusText').innerText = 'STARTING...';
-  }
+    const res = await fetch('/api/status'); const data = await res.json();
+    document.getElementById('botName').innerText = (data.botName||'ZENITH-XMD').substring(0,12);
+    document.getElementById('plugCount').innerText = data.plugins||0;
+    const dot = document.getElementById('dot');
+    const badge = document.getElementById('onlineBadge');
+    const statusText = document.getElementById('statusText');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const btn = document.getElementById('btn');
+    const desc = document.getElementById('pairDesc');
+    if(data.isConnected){
+      dot.className='dot'; statusText.innerText='ONLINE ✅'; badge.style.display='block'; logoutBtn.style.display='block'; btn.style.display='none'; desc.innerText='Bot is linked! Use .menu in WhatsApp';
+      document.getElementById('phone').style.display='none';
+      document.querySelector('.input-box').style.display='none';
+    } else {
+      dot.className='dot offline'; statusText.innerText=data.status||'READY TO PAIR'; badge.style.display='none'; logoutBtn.style.display='none'; btn.style.display='block'; desc.innerText='Enter your number with country code. No + or space.'; document.getElementById('phone').style.display='block'; document.querySelector('.input-box').style.display='block';
+    }
+  }catch{ document.getElementById('statusText').innerText='STARTING...'; }
 }
-fetchInfo(); setInterval(fetchInfo, 3000);
+fetchInfo(); setInterval(fetchInfo, 2500);
 
 async function getCode(){
- const phone = document.getElementById('phone').value.replace(/[^0-9]/g,'');
- const btn = document.getElementById('btn');
- const codeBox = document.getElementById('codeBox');
- const codeEl = document.getElementById('code');
- if(!phone || phone.length < 10){ alert('Enter valid number e.g 2348071569915'); return; }
- btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GENERATING...';
+ const phoneEl=document.getElementById('phone'); const phone=phoneEl.value.replace(/[^0-9]/g,''); const btn=document.getElementById('btn'); const codeBox=document.getElementById('codeBox'); const codeEl=document.getElementById('code');
+ if(!phone||phone.length<10){ alert('Enter valid number e.g 2348071569915'); return; }
+ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> GENERATING...';
  try{
-  const res = await fetch('/api/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
-  const data = await res.json();
-  if(data.success){
-   codeEl.innerText = data.code;
-   codeBox.classList.add('show');
-   btn.innerHTML = 'CODE READY ✅';
-   let s = 60;
-   clearInterval(timer);
-   timer = setInterval(()=>{
-    s--; btn.innerHTML = `EXPIRES IN ${s}s`;
-    if(s<=0){ clearInterval(timer); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; codeBox.classList.remove('show'); }
-   },1000);
-  }else{ alert(data.message); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; }
- }catch(e){ alert('Error'); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; }
+  const res=await fetch('/api/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})}); const data=await res.json();
+  if(data.success){ codeEl.innerText=data.code; codeBox.classList.add('show'); let s=60; clearInterval(timer); timer=setInterval(()=>{ s--; btn.innerHTML=`EXPIRES IN ${s}s`; if(s<=0){ clearInterval(timer); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; codeBox.classList.remove('show'); } },1000); }
+  else{ alert(data.message); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; }
+ }catch(e){ alert('Error, retry'); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; }
+}
+
+async function logout(){
+ if(!confirm('Logout bot? Session will be deleted')) return;
+ try{ await fetch('/api/logout',{method:'POST'}); alert('Logged out! Refresh'); location.reload(); }catch{}
 }
 </script>
 </body>
-  </html>
+</html>
