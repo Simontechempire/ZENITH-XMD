@@ -1,5 +1,8 @@
 require('dotenv').config();
 
+// ⚡ RENDER SPEED BOOST
+try { require('./lib/renderBoost').init(); } catch (e) {}
+
 module.exports = {
   // ===== CORE BRANDING =====
   botName: process.env.BOT_NAME || "ZENITH-XMD",
@@ -8,7 +11,7 @@ module.exports = {
   ownerName: "Simon",
   ownerNumber: process.env.OWNER_NUMBER || "2348071569915",
   owner: ["2348071569915"],
-  sudo: ["2348071569915"], // for global.db.sudo
+  sudo: ["2348071569915"],
   allowedNumbers: ["2348071569915"],
   
   // ===== PREFIX & VERSION =====
@@ -24,7 +27,7 @@ module.exports = {
   pairing: true,
   publicMode: true,
   protectIp: false,
-  mode: "public", // public | self | private
+  mode: "public",
 
   // ===== WHATSAPP LID & NEW FEATURES =====
   lidSupport: true,
@@ -36,9 +39,9 @@ module.exports = {
   callLinkEnabled: true,
   disappear90Enabled: true,
 
-  // ===== AUTO DEFAULTS (For connection.js) =====
+  // ===== AUTO DEFAULTS - OPTIMIZED FOR RENDER SPEED =====
   autoread: false,
-  autostatus: true,
+  autostatus: false, // <-- Changed to false for speed
   autovv: false,
   autolike: false,
   autoreact: false,
@@ -65,4 +68,4 @@ module.exports = {
     banned: "⛔ You are banned from using bot",
     done: "✅ Successful"
   }
-    }
+}
