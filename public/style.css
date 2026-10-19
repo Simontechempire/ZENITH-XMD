@@ -3,109 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZENITH-XMD • Peak Edition 2026</title>
-<link rel="stylesheet" href="style.css">
+<title>ZENITH-XMD • Peak V3 • 2026</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
-.pair-input{width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;color:#fff;outline:none;font-family:'JetBrains Mono';margin-bottom:12px}
-.pair-input:focus{border-color:#7c3aed}
-.code-box{margin-top:16px;background:#000;border:1px dashed #7c3aed;border-radius:12px;padding:20px;text-align:center;display:none}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#08080c;color:#fff;font-family:system-ui;min-height:100vh;padding:16px;position:relative;overflow-x:hidden}
+.bg-orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.16;pointer-events:none}
+.orb1{width:500px;height:500px;background:#7c3aed;top:-150px;left:-150px}
+.orb2{width:400px;height:400px;background:#06ffa5;bottom:0;right:-100px}
+.orb3{width:300px;height:300px;background:#00d4ff;top:40%;left:40%}
+.container{max-width:440px;margin:0 auto;position:relative;z-index:2}
+.logo-wrap{text-align:center;margin:26px 0 18px}
+.logo{font-size:44px;filter:drop-shadow(0 0 18px #7c3aed)}
+.logo-wrap h1{font-size:28px;letter-spacing:4px;font-weight:900}
+.subtitle{color:#555;font-size:10px;letter-spacing:3px;margin-top:6px;font-weight:700}
+.card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:20px;margin-bottom:14px;backdrop-filter:blur(16px)}
+.status-header{display:flex;align-items:center;justify-content:space-between}
+.status-left{display:flex;align-items:center;gap:8px;font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;background:#00ff88;box-shadow:0 0 10px #00ff88;animation:pulse 2s infinite}
+.dot.off{background:#ff184c;box-shadow:0 0 10px #ff184c}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stat{background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.05);padding:11px;border-radius:11px;font-size:11.5px;display:flex;align-items:center;gap:8px;color:#888}
+.stat b{color:#fff}
+.stat i{color:#a78bfa}
+.pair-input{width:100%;background:rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:15px 15px 15px 44px;color:#fff;outline:none;font-size:15px;margin-bottom:12px;transition:.2s}
+.pair-input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
+.input-wrap{position:relative}
+.input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#333;transform:translateY(-50%)}
+.btn{width:100%;background:#fff;color:#000;border:none;border-radius:12px;padding:15px;font-weight:800;letter-spacing:1px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{background:#a78bfa;transform:translateY(-1px)}
+.btn:disabled{background:#1a1a1a;color:#444}
+.btn-danger{background:transparent;border:1px solid #ff184c;color:#ff184c;margin-top:12px}
+.btn-danger:hover{background:#ff184c;color:#fff}
+.code-box{margin-top:16px;background:#000;border:1px dashed #7c3aed;border-radius:14px;padding:20px;text-align:center;display:none}
 .code-box.show{display:block;animation:pop .3s}
-.code{font-size:32px;letter-spacing:8px;color:#a78bfa;font-weight:700;margin:10px 0;font-family:'JetBrains Mono'}
-@keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
-.btn-full{width:100%;justify-content:center;cursor:pointer;border:none}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.code{font-size:34px;letter-spacing:8px;color:#a78bfa;font-weight:900;margin:10px 0;font-family:monospace;text-shadow:0 0 20px #7c3aed}
+.steps{margin-top:16px}
+.step{font-size:11.5px;color:#666;padding:9px 0;border-bottom:1px solid #111;display:flex;gap:10px;align-items:center}
+.step span{background:#111;border:1px solid #222;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:10px;color:#a78bfa;font-weight:800}
+.features-card h3{font-size:13px;margin-bottom:8px}
+.features-card ul{list-style:none}
+.features-card li{font-size:12px;color:#666;padding:8px 0;display:flex;gap:9px;border-bottom:1px solid #0e0e0e}
+.features-card li i{color:#00ff88;margin-top:1px}
+footer{text-align:center;color:#2a2a2a;font-size:9px;margin-top:14px;padding:16px;letter-spacing:1px}
+.badge{background:#00ff88;color:#000;font-size:8px;padding:3px 8px;border-radius:20px;font-weight:900}
 </style>
 </head>
 <body>
 <div class="bg-orb orb1"></div>
 <div class="bg-orb orb2"></div>
 <div class="bg-orb orb3"></div>
-
 <div class="container">
   <div class="logo-wrap">
     <div class="logo">🏔️</div>
     <h1>ZENITH-XMD</h1>
-    <p class="subtitle">PEAK EDITION 2026 • PUBLIC PAIRING</p>
+    <p class="subtitle">PEAK EDITION V3 • 2026 • FAST LINK</p>
   </div>
 
-  <div class="card status-card">
+  <div class="card">
     <div class="status-header">
-      <span id="dot" class="dot"></span>
-      <span id="statusText">Checking Status...</span>
+      <div class="status-left"><span id="dot" class="dot off"></span><span id="statusText">Checking...</span></div>
+      <span id="badge" class="badge" style="display:none">ONLINE</span>
     </div>
     <div class="stats-grid">
-      <div class="stat"><i class="fas fa-robot"></i><span id="botName">ZENITH-XMD</span></div>
-      <div class="stat"><i class="fas fa-code"></i><span>365 CMD</span></div>
-      <div class="stat"><i class="fas fa-clock"></i><span id="uptime">00:00:00</span></div>
+      <div class="stat"><i class="fas fa-robot"></i><span><b id="botName">ZENITH</b></span></div>
+      <div class="stat"><i class="fas fa-bolt"></i><span><b id="cmdCount">365</b> CMD</span></div>
+      <div class="stat"><i class="fas fa-globe"></i><span id="host">Render</span></div>
       <div class="stat"><i class="fas fa-crown"></i><span>Simon</span></div>
     </div>
   </div>
 
-  <div class="card pairing-card">
-    <h2><i class="fas fa-link"></i> PUBLIC PAIRING MODE</h2>
-    <p>Bot uses <b>Pairing Code</b> (not QR). Anyone can pair! Enter number with country code.</p>
-    
-    <input id="phone" class="pair-input" type="text" placeholder="2348071569915">
-    <button id="btn" class="btn btn-full" onclick="getCode()"><i class="fas fa-key"></i> GET PAIRING CODE</button>
+  <div class="card">
+    <h2 style="font-size:14px;margin-bottom:8px"><i class="fas fa-link"></i> PUBLIC PAIRING MODE</h2>
+    <p id="desc" style="font-size:12px;color:#666;margin-bottom:14px;line-height:1.5">Bot uses <b>Pairing Code</b> (not QR). Enter number with country code.</p>
+    <div id="pairArea">
+      <div class="input-wrap">
+        <i class="fas fa-phone"></i>
+        <input id="phone" class="pair-input" type="text" placeholder="2348071569915">
+      </div>
+      <button id="btn" class="btn" onclick="getCode()"><i class="fas fa-key"></i> GET PAIRING CODE</button>
+    </div>
 
     <div id="codeBox" class="code-box">
-      <div style="font-size:10px;color:#666;letter-spacing:3px">YOUR CODE • 60 SEC</div>
+      <div style="font-size:9px;color:#555;letter-spacing:3px">YOUR CODE • EXPIRES 60S</div>
       <div id="code" class="code">--------</div>
-      <div style="font-size:11px;color:#888">WhatsApp > Linked Devices > Link with phone number</div>
+      <div style="font-size:11px;color:#555">WhatsApp > Linked Devices > Link with phone number</div>
     </div>
 
     <div class="steps">
       <div class="step"><span>1</span> Enter number & get code</div>
-      <div class="step"><span>2</span> Open WhatsApp > Linked Devices</div>
-      <div class="step"><span>3</span> Tap Link with Phone Number > Enter Code</div>
+      <div class="step"><span>2</span> WhatsApp > Linked Devices</div>
+      <div class="step"><span>3</span> Link with Phone Number > Enter Code</div>
     </div>
+    <button id="logoutBtn" class="btn btn-danger" onclick="logout()" style="display:none"><i class="fas fa-power-off"></i> LOGOUT & RESET SESSION</button>
   </div>
 
   <div class="card features-card">
-    <h3>🔥 Features 2026</h3>
+    <h3>🔥 V3 Features</h3>
     <ul>
-      <li><i class="fas fa-bolt"></i> 365 CMDs</li>
-      <li><i class="fas fa-shield"></i> Anti-Link/Call</li>
-      <li><i class="fas fa-brain"></i> GPT4, Gemini</li>
-      <li><i class="fas fa-download"></i> YT, TikTok, IG</li>
-      <li><i class="fas fa-users"></i> Group Tools</li>
-      <li><i class="fas fa-check"></i> LID, HD, PTV, EDIT</li>
+      <li><i class="fas fa-rocket"></i> Fast Reply 0.5s - Render Optimized</li>
+      <li><i class="fas fa-bolt"></i> 365+ Commands Wired</li>
+      <li><i class="fas fa-shield"></i> Anti-Link, Anti-Call, Anti-Delete</li>
+      <li><i class="fas fa-eye"></i> AutoVV + Cache System</li>
+      <li><i class="fas fa-users"></i> Group Tools + Admin</li>
+      <li><i class="fas fa-brain"></i> AI • Downloader • Tools • Logo</li>
     </ul>
   </div>
-
-  <footer>© 2026 ZENITH-XMD | Simon Tech | PUBLIC BOT</footer>
+  <footer>© 2026 ZENITH-XMD V3 | Simon Tech | FAST MODE</footer>
 </div>
 
 <script>
 let timer;
 async function fetchInfo(){
-  try{
-    const res = await fetch('/api/status');
-    const data = await res.json();
-    document.getElementById('botName').innerText = data.botName || 'ZENITH-XMD';
-    document.getElementById('statusText').innerText = data.status || 'READY TO PAIR - PUBLIC';
-    document.getElementById('uptime').innerText = Math.floor(data.uptime/60)+'m';
-  }catch{ document.getElementById('statusText').innerText = 'OFFLINE - Start Bot'; }
+ try{
+  const r=await fetch('/api/status'); const d=await r.json();
+  document.getElementById('botName').innerText=(d.botName||'ZENITH-XMD').slice(0,12);
+  document.getElementById('cmdCount').innerText=d.plugins||365;
+  const dot=document.getElementById('dot'); const badge=document.getElementById('badge'); const st=document.getElementById('statusText'); const pairArea=document.getElementById('pairArea'); const logoutBtn=document.getElementById('logoutBtn'); const desc=document.getElementById('desc');
+  if(d.isConnected){ dot.className='dot'; st.innerText='ONLINE ✅ - Bot Linked'; badge.style.display='block'; pairArea.style.display='none'; logoutBtn.style.display='flex'; desc.innerText='Bot linked! Go to WhatsApp and use .menu'; }
+  else{ dot.className='dot off'; st.innerText=d.status||'READY TO PAIR - PUBLIC'; badge.style.display='none'; pairArea.style.display='block'; logoutBtn.style.display='none'; desc.innerHTML='Bot uses <b>Pairing Code</b> (not QR). Enter number with country code.'; }
+  const host=document.getElementById('host'); if(d.botName) host.innerText= d.isConnected ? 'Linked' : 'Render';
+ }catch{ document.getElementById('statusText').innerText='STARTING...'; }
 }
-fetchInfo(); setInterval(fetchInfo, 3000);
+fetchInfo(); setInterval(fetchInfo, 2500);
 
 async function getCode(){
- const phone=document.getElementById('phone').value.replace(/[^0-9]/g,'');
- const btn=document.getElementById('btn');
- const box=document.getElementById('codeBox');
- const codeEl=document.getElementById('code');
- if(phone.length<10){alert('Valid number e.g 2348071569915');return;}
+ const phone=document.getElementById('phone').value.replace(/[^0-9]/g,''); const btn=document.getElementById('btn'); const box=document.getElementById('codeBox'); const codeEl=document.getElementById('code');
+ if(phone.length<10){ alert('Enter valid number e.g 2348071569915'); return; }
  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> GENERATING...';
  try{
-  const res=await fetch('/api/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})});
-  const data=await res.json();
-  if(data.success){
-   codeEl.innerText=data.code; box.classList.add('show'); btn.innerHTML='CODE READY ✅';
-   let s=60; clearInterval(timer);
-   timer=setInterval(()=>{s--; btn.innerHTML=`EXPIRES IN ${s}s`; if(s<=0){clearInterval(timer); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; box.classList.remove('show');}},1000);
-  }else{alert(data.message); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE';}
- }catch(e){alert('Error'); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE';}
+  const res=await fetch('/api/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone})}); const data=await res.json();
+  if(data.success){ codeEl.innerText=data.code; box.classList.add('show'); let s=60; clearInterval(timer); timer=setInterval(()=>{ s--; btn.innerHTML=`EXPIRES IN ${s}s - ${data.code}`; if(s<=0){ clearInterval(timer); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; box.classList.remove('show'); } },1000); }
+  else{ alert(data.message); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; }
+ }catch{ alert('Error, retry'); btn.disabled=false; btn.innerHTML='<i class="fas fa-key"></i> GET PAIRING CODE'; }
 }
+async function logout(){ if(!confirm('Logout? Session go delete')) return; try{ await fetch('/api/logout',{method:'POST'}); location.reload(); }catch{} }
 </script>
 </body>
 </html>
