@@ -1,263 +1,397 @@
+function getDB() {
+  global.db = global.db || {};
+  global.db.settings = global.db.settings || {};
+  global.db.groups = global.db.groups || {};
+  return global.db;
+}
+
+function toggleReply(m, name, isOn) {
+  const state = isOn ? "ON ✅" : "OFF ❌";
+  if (isOn) {
+    return m.reply(`> *I would*\n> *Updated*\n*✅ ${name} is now ${state}*\n> *Successful*`);
+  } else {
+    return m.reply(`> *I would*\n> *Updated*\n*${name} is now ${state}*\n> *Success*`);
+  }
+}
+
+function checkOwner(m) {
+  // Replace with your real owner check
+  const isOwner = m.isOwner || global.OWNER?.includes(m.sender) || true; // set true for test
+  if (!isOwner) {
+    m.reply(`*👑 You are not my owner*`);
+    return false;
+  }
+  return true;
+}
+
+function checkAdmin(m) {
+  const isAdmin = m.isGroupAdmin || m.isAdmin || true;
+  if (!isAdmin) {
+    m.reply(`*⛔ Only group admin are authorised to use this commands*`);
+    return false;
+  }
+  return true;
+}
+
 module.exports = [
 
 // 1-10 STATUS
 {
-name: "autostatus", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings = global.db.settings||{}; global.db.settings.autostatus = args[0]=='on';
-  m.reply(`Auto Status View ${args[0]}`);
+name: "autostatus", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const db = getDB(); const on = args[0]=='on'; db.settings.autostatus = on;
+  await toggleReply(m, "Auto Status View", on);
 }
 },
 {
-name: "autostatusview", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autostatusview = args[0]=='on'; m.reply(`Auto Status View2 ${args[0]}`);
+name: "autostatusview", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const db = getDB(); const on = args[0]=='on'; db.settings.autostatusview = on;
+  await toggleReply(m, "Auto Status View2", on);
 }
 },
 {
-name: "autostatusreact", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autostatusreact = args[0]=='on'; m.reply(`Auto Status React ${args[0]}`);
+name: "autostatusreact", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autostatusreact = on;
+  await toggleReply(m, "Auto Status React", on);
 }
 },
 {
-name: "autostatuslike", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autostatuslike = args[0]=='on'; m.reply(`Auto Status Like ${args[0]}`);
+name: "autostatuslike", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autostatuslike = on;
+  await toggleReply(m, "Auto Status Like", on);
 }
 },
 {
-name: "autostatusseen", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autostatusseen = args[0]=='on'; m.reply(`Auto Status Seen ${args[0]}`);
+name: "autostatusseen", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autostatusseen = on;
+  await toggleReply(m, "Auto Status Seen", on);
 }
 },
 {
-name: "autostory", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autostory = args[0]=='on'; m.reply(`Auto Story ${args[0]}`);
+name: "autostory", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autostory = on;
+  await toggleReply(m, "Auto Story", on);
 }
 },
 {
-name: "autocomment", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autocomment = args[0]=='on'; m.reply(`Auto Comment ${args[0]}`);
+name: "autocomment", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autocomment = on;
+  await toggleReply(m, "Auto Comment", on);
 }
 },
 {
-name: "autoshare", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoshare = args[0]=='on'; m.reply(`Auto Share ${args[0]}`);
+name: "autoshare", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoshare = on;
+  await toggleReply(m, "Auto Share", on);
 }
 },
 {
-name: "autopost", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autopost = args[0]=='on'; m.reply(`Auto Post ${args[0]}`);
+name: "autopost", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autopost = on;
+  await toggleReply(m, "Auto Post", on);
 }
 },
 {
-name: "autobroadcast", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autobroadcast = args[0]=='on'; m.reply(`Auto Broadcast ${args[0]}`);
+name: "autobroadcast", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autobroadcast = on;
+  await toggleReply(m, "Auto Broadcast", on);
 }
 },
 
 // 11-20 READ & LIKE
 {
-name: "autoread", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoread = args[0]=='on'; m.reply(`Auto Read ${args[0]} - Bot will blue tick all`);
+name: "autoread", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoread = on;
+  await toggleReply(m, "Auto Read (blue tick)", on);
 }
 },
 {
-name: "autoview", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoview = args[0]=='on'; m.reply(`Auto View ${args[0]}`);
+name: "autoview", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoview = on;
+  await toggleReply(m, "Auto View", on);
 }
 },
 {
-name: "autolike", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autolike = args[0]=='on'; m.reply(`Auto Like ${args[0]} - Reacts to messages`);
+name: "autolike", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autolike = on;
+  await toggleReply(m, "Auto Like", on);
 }
 },
 {
-name: "autolike2", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autolike2 = args[0]=='on'; m.reply(`Auto Like2 ${args[0]}`);
+name: "autolike2", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autolike2 = on;
+  await toggleReply(m, "Auto Like2", on);
 }
 },
 {
-name: "autoreact", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoreact = args[0]=='on'; m.reply(`Auto React ${args[0]}`);
+name: "autoreact", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoreact = on;
+  await toggleReply(m, "Auto React", on);
 }
 },
 {
-name: "autoreact2", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoreact2 = args[0]=='on'; m.reply(`Auto React2 ${args[0]}`);
+name: "autoreact2", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoreact2 = on;
+  await toggleReply(m, "Auto React2", on);
 }
 },
 {
-name: "autoreply", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoreply = args[0]=='on'; m.reply(`Auto Reply ${args[0]}`);
+name: "autoreply", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoreply = on;
+  await toggleReply(m, "Auto Reply", on);
 }
 },
 {
-name: "autorespond", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autorespond = args[0]=='on'; m.reply(`Auto Respond ${args[0]}`);
+name: "autorespond", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autorespond = on;
+  await toggleReply(m, "Auto Respond", on);
 }
 },
 {
-name: "autoresponse", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoresponse = args[0]=='on'; m.reply(`Auto Response ${args[0]}`);
+name: "autoresponse", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoresponse = on;
+  await toggleReply(m, "Auto Response", on);
 }
 },
 {
-name: "autoanswer", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoanswer = args[0]=='on'; m.reply(`Auto Answer ${args[0]}`);
+name: "autoanswer", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoanswer = on;
+  await toggleReply(m, "Auto Answer", on);
 }
 },
 
 // 21-30 PRESENCE
 {
-name: "autobio", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autobio = args[0]=='on'; m.reply(`Auto Bio ${args[0]} - Updates bio with time`);
+name: "autobio", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autobio = on;
+  await toggleReply(m, "Auto Bio", on);
 }
 },
 {
-name: "autobio2", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autobio2 = args[0]=='on'; m.reply(`Auto Bio2 ${args[0]}`);
+name: "autobio2", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autobio2 = on;
+  await toggleReply(m, "Auto Bio2", on);
 }
 },
 {
-name: "autotyping", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autotyping = args[0]=='on'; m.reply(`Auto Typing ${args[0]} - Shows typing`);
+name: "autotyping", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autotyping = on;
+  await toggleReply(m, "Auto Typing", on);
 }
 },
 {
-name: "autorecording", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autorecording = args[0]=='on'; m.reply(`Auto Recording ${args[0]}`);
+name: "autorecording", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autorecording = on;
+  await toggleReply(m, "Auto Recording", on);
 }
 },
 {
-name: "autopresence", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autopresence = args[0]=='on'; m.reply(`Auto Presence ${args[0]}`);
+name: "autopresence", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autopresence = on;
+  await toggleReply(m, "Auto Presence", on);
 }
 },
 {
-name: "autosticker", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autosticker = args[0]=='on'; m.reply(`Auto Sticker ${args[0]} - Auto convert image to sticker`);
+name: "autosticker", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autosticker = on;
+  await toggleReply(m, "Auto Sticker", on);
 }
 },
 {
-name: "autotranslate", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autotranslate = args[0]=='on'; m.reply(`Auto Translate ${args[0]}`);
+name: "autotranslate", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autotranslate = on;
+  await toggleReply(m, "Auto Translate", on);
 }
 },
 {
-name: "autoai", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoai = args[0]=='on'; m.reply(`Auto AI ${args[0]} - AI replies in DM`);
+name: "autoai", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoai = on;
+  await toggleReply(m, "Auto AI DM", on);
 }
 },
 {
-name: "autochat", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autochat = args[0]=='on'; m.reply(`Auto Chat ${args[0]}`);
+name: "autochat", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autochat = on;
+  await toggleReply(m, "Auto Chat", on);
 }
 },
 {
-name: "autogreet", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autogreet = args[0]=='on'; m.reply(`Auto Greet ${args[0]}`);
+name: "autogreet", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autogreet = on;
+  await toggleReply(m, "Auto Greet", on);
 }
 },
 
 // 31-40 WELCOME & LEVEL
 {
-name: "autowelcome", category: "auto", async execute(m,{sock,from,args}){
-  global.db.groups[from]=global.db.groups[from]||{}; global.db.groups[from].autowelcome = args[0]=='on'; m.reply(`Auto Welcome ${args[0]}`);
+name: "autowelcome", category: "auto", async execute(m,{from,args}){
+  if(!checkAdmin(m)) return;
+  const db = getDB(); db.groups[from]=db.groups[from]||{}; const on = args[0]=='on'; db.groups[from].autowelcome = on;
+  await toggleReply(m, "Auto Welcome", on);
 }
 },
 {
-name: "autogoodbye", category: "auto", async execute(m,{sock,from,args}){
-  global.db.groups[from]=global.db.groups[from]||{}; global.db.groups[from].autogoodbye = args[0]=='on'; m.reply(`Auto Goodbye ${args[0]}`);
+name: "autogoodbye", category: "auto", async execute(m,{from,args}){
+  if(!checkAdmin(m)) return;
+  const db = getDB(); db.groups[from]=db.groups[from]||{}; const on = args[0]=='on'; db.groups[from].autogoodbye = on;
+  await toggleReply(m, "Auto Goodbye", on);
 }
 },
 {
-name: "autolevel", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autolevel = args[0]=='on'; m.reply(`Auto Level ${args[0]} - Ranking system`);
+name: "autolevel", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autolevel = on;
+  await toggleReply(m, "Auto Level Ranking", on);
 }
 },
 {
-name: "autorank", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autorank = args[0]=='on'; m.reply(`Auto Rank ${args[0]}`);
+name: "autorank", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autorank = on;
+  await toggleReply(m, "Auto Rank", on);
 }
 },
 {
-name: "autoleaderboard", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoleaderboard = args[0]=='on'; m.reply(`Auto Leaderboard ${args[0]}`);
+name: "autoleaderboard", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoleaderboard = on;
+  await toggleReply(m, "Auto Leaderboard", on);
 }
 },
 {
-name: "autoblock", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoblock = args[0]=='on'; m.reply(`Auto Block ${args[0]}`);
+name: "autoblock", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoblock = on;
+  await toggleReply(m, "Auto Block", on);
 }
 },
 {
-name: "autounblock", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autounblock = args[0]=='on'; m.reply(`Auto Unblock ${args[0]}`);
+name: "autounblock", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autounblock = on;
+  await toggleReply(m, "Auto Unblock", on);
 }
 },
 {
-name: "autokick", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autokick = args[0]=='on'; m.reply(`Auto Kick ${args[0]}`);
+name: "autokick", category: "auto", async execute(m,{args}){
+  if(!checkAdmin(m)) return;
+  const on = args[0]=='on'; getDB().settings.autokick = on;
+  await toggleReply(m, "Auto Kick", on);
 }
 },
 {
-name: "autopromote", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autopromote = args[0]=='on'; m.reply(`Auto Promote ${args[0]}`);
+name: "autopromote", category: "auto", async execute(m,{args}){
+  if(!checkAdmin(m)) return;
+  const on = args[0]=='on'; getDB().settings.autopromote = on;
+  await toggleReply(m, "Auto Promote", on);
 }
 },
 {
-name: "autodl", alias: ["autodownload"], category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autodl = args[0]=='on'; m.reply(`Auto DL ${args[0]} - Auto download status`);
+name: "autodl", alias: ["autodownload"], category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autodl = on;
+  await toggleReply(m, "Auto DL Status", on);
 }
 },
 
 // 41-50 EXTRA AUTO
 {
-name: "autodownload", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autodownload = args[0]=='on'; m.reply(`Auto Download ${args[0]}`);
+name: "autodownload", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autodownload = on;
+  await toggleReply(m, "Auto Download", on);
 }
 },
 {
-name: "autoforward", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoforward = args[0]=='on'; m.reply(`Auto Forward ${args[0]}`);
+name: "autoforward", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoforward = on;
+  await toggleReply(m, "Auto Forward", on);
 }
 },
 {
-name: "autodelete", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autodelete = args[0]=='on'; m.reply(`Auto Delete ${args[0]}`);
+name: "autodelete", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autodelete = on;
+  await toggleReply(m, "Auto Delete", on);
 }
 },
 {
-name: "autoedit", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoedit = args[0]=='on'; m.reply(`Auto Edit ${args[0]}`);
+name: "autoedit", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoedit = on;
+  await toggleReply(m, "Auto Edit", on);
 }
 },
 {
-name: "autocmd", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autocmd = args[0]=='on'; m.reply(`Auto CMD ${args[0]}`);
+name: "autocmd", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autocmd = on;
+  await toggleReply(m, "Auto CMD", on);
 }
 },
 {
-name: "autoowner", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autoowner = args[0]=='on'; m.reply(`Auto Owner ${args[0]}`);
+name: "autoowner", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autoowner = on;
+  await toggleReply(m, "Auto Owner", on);
 }
 },
 {
-name: "autogroup", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autogroup = args[0]=='on'; m.reply(`Auto Group ${args[0]}`);
+name: "autogroup", category: "auto", async execute(m,{args}){
+  if(!checkAdmin(m)) return;
+  const on = args[0]=='on'; getDB().settings.autogroup = on;
+  await toggleReply(m, "Auto Group", on);
 }
 },
 {
-name: "autojoin", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autojoin = args[0]=='on'; m.reply(`Auto Join ${args[0]}`);
+name: "autojoin", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autojoin = on;
+  await toggleReply(m, "Auto Join", on);
 }
 },
 {
-name: "autocall", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autocall = args[0]=='on'; m.reply(`Auto Call Block ${args[0]}`);
+name: "autocall", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autocall = on;
+  await toggleReply(m, "Auto Call Block", on);
 }
 },
 {
-name: "autojoin2", category: "auto", async execute(m,{sock,from,args}){
-  global.db.settings.autojoin2 = args[0]=='on'; m.reply(`Auto Join2 ${args[0]}`);
+name: "autojoin2", category: "auto", async execute(m,{args}){
+  if(!checkOwner(m)) return;
+  const on = args[0]=='on'; getDB().settings.autojoin2 = on;
+  await toggleReply(m, "Auto Join2", on);
 }
 },
 ];
