@@ -1,153 +1,98 @@
+// commands/vv.js - VV / VIEW ONCE MENU 141-150 by Simon Tech
+// How e work: Reply to a View Once message with .vv
+// Bot go download am and send am back as normal message
+
+async function getVV(m, F) {
+  // Check quoted first, then current msg
+  let ctx = m.message?.extendedTextMessage?.contextInfo;
+  let quoted = ctx?.quotedMessage;
+  // 1. Quoted is viewOnce
+  if (quoted?.viewOnceMessage) return { msg: quoted.viewOnceMessage.message, key: { remoteJid: m.key.remoteJid, id: ctx.stanzaId, participant: ctx.participant } };
+  if (quoted?.viewOnceMessageV2) return { msg: quoted.viewOnceMessageV2.message, key: { remoteJid: m.key.remoteJid, id: ctx.stanzaId, participant: ctx.participant } };
+  // 2. Current msg is viewOnce
+  if (m.message?.viewOnceMessage) return { msg: m.message.viewOnceMessage.message, key: m.key };
+  if (m.message?.viewOnceMessageV2) return { msg: m.message.viewOnceMessageV2.message, key: m.key };
+  // 3. Quoted is image/video with viewOnce flag
+  if (quoted?.imageMessage?.viewOnce || quoted?.videoMessage?.viewOnce || quoted?.audioMessage?.viewOnce) return { msg: quoted, key: { remoteJid: m.key.remoteJid, id: ctx.stanzaId, participant: ctx.participant } };
+  return null;
+}
+
+async function downloadVV(sock, vv, F) {
+  // Build fake message for downloadContentFromMessage
+  let type = Object.keys(vv.msg)[0];
+  let mediaMsg = { message: vv.msg };
+  // Use Baileys download via sock - we use helper from function.js if available
+  try {
+    const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
+    let stream = await downloadContentFromMessage(vv.msg[type], type.replace('Message',''));
+    let chunks = [];
+    for await (let c of stream) chunks.push(c);
+    return { buf: Buffer.concat(chunks), type };
+  } catch(e) { return { buf: null, type }; }
+}
+
+async function sendVV({ reply, sock, from, m, F }, onlyType = null) {
+  let vv = await getVV(m, F);
+  if (!vv) return reply('👁️ *Reply to a View Once message first!*\n\nUsage: Reply to VV photo/video with .vv\n\n©️ Zenith tech');
+  let { buf, type } = await downloadVV(sock, vv, F);
+  if (!buf) return reply('❌ Failed to download VV. Try again, or sender don open am already.');
+  if (onlyType && !type.includes(onlyType)) return reply(`This VV is ${type}, not ${onlyType}. Use .vv for all.`);
+  let caption = `✅ *VIEW ONCE SAVED*\nType: ${type}\n\n©️ Zenith bypaser view once`;
+  if (type === 'imageMessage') return sock.sendMessage(from, { image: buf, caption }, { quoted: m });
+  if (type === 'videoMessage') return sock.sendMessage(from, { video: buf, caption }, { quoted: m });
+  if (type === 'audioMessage') return sock.sendMessage(from, { audio: buf, mimetype: 'audio/mp4', ptt: true }, { quoted: m });
+  return sock.sendMessage(from, { text: caption + '\nSaved but unknown type' }, { quoted: m });
+}
+
 module.exports = [
 {
-name: "vv", 
-alias: ["rvo","viewonce","antiviewonce","openviewonce"], 
-category: "vv", 
-desc: "Unlock ViewOnce image/video/audio",
-async execute(m,{sock,from}){
-  try {
-    if(!m.quoted) return m.reply("❌ *Reply a ViewOnce message with .vv*\nEx: Reply ViewOnce image then type .vv");
-    
-    const q = m.quoted.message;
-    const viewOnce = q?.viewOnceMessage || q?.viewOnceMessageV2 || q?.viewOnceMessageV2Extension;
-    if(!viewOnce) return m.reply("❌ This is not a ViewOnce message");
-
-    const inner = viewOnce.message;
-    const type = Object.keys(inner)[0];
-    const media = inner[type];
-
-    // Remove viewonce flags
-    if(media.viewOnce) delete media.viewOnce;
-    if(media.viewOnceV2) delete media.viewOnceV2;
-
-    // Try download properly
-    const buffer = await sock.downloadMediaMessage({ message: inner });
-    
-    if(type === 'imageMessage'){
-      await sock.sendMessage(from,{image: buffer || media, caption:`*🔓 VV UNLOCKED*\n> Type: Image\n> By ${global.db?.settings?.botName || "ZENITH-XMD PEAK"}`}, {quoted:m});
-    } else if(type === 'videoMessage'){
-      await sock.sendMessage(from,{video: buffer || media, caption:`*🔓 VV VIDEO UNLOCKED*\n> Success ✅`}, {quoted:m});
-    } else if(type === 'audioMessage'){
-      await sock.sendMessage(from,{audio: buffer || media, mimetype:'audio/ogg; codecs=opus', ptt:true}, {quoted:m});
-      await sock.sendMessage(from,{text:"✅ *Voice ViewOnce unlocked*"}, {quoted:m});
-    } else {
-      await sock.sendMessage(from,{text:"✅ ViewOnce unlocked"}, {quoted:m});
-    }
-  } catch(e){
-    console.log(e);
-    m.reply(`❌ VV Error: ${e.message}\nTry .vv2`);
-  }
-}
+  name: 'vv', aliases: ['viewonce', 'saveview', 'readview'], category: 'vv',
+  run: async (ctx) => { return sendVV(ctx); }
 },
 {
-name: "vv2", 
-alias: ["rvo2","vvv2","viewonce2"], 
-category: "vv",
-desc: "VV2 - Alternative unlock with forward",
-async execute(m,{sock,from}){
-  try {
-    if(!m.quoted) return m.reply("❌ Reply ViewOnce with .vv2");
-    
-    const q = m.quoted.message;
-    const vm = q?.viewOnceMessageV2 || q?.viewOnceMessage || q?.viewOnceMessageV2Extension;
-    if(!vm) return m.reply("❌ Not a ViewOnce - reply directly to the ViewOnce");
-
-    // Forward method - most stable for Baileys v6+
-    const inner = vm.message;
-    const type = Object.keys(inner)[0];
-    
-    // Force remove viewonce to allow forward
-    if(inner[type].viewOnce) inner[type].viewOnce = false;
-    if(inner[type].viewOnceV2) inner[type].viewOnceV2 = false;
-
-    await sock.sendMessage(from, { forward: vm }, { quoted: m });
-    await sock.sendMessage(from, { text: `*🔓 VV2 UNLOCKED - ${type.replace('Message','')}*\n✅ Forwarded successfully` }, { quoted: m });
-
-  } catch(e){
-    m.reply(`❌ VV2 Error: ${e.message}`);
-  }
-}
+  name: 'viewonce', category: 'vv',
+  run: async (ctx) => { return sendVV(ctx); }
 },
 {
-name: "vv3", 
-alias: ["rvo3","audiovv","voicevv"], 
-category: "vv",
-desc: "Audio ViewOnce unlock",
-async execute(m,{sock,from}){
-  try {
-    if(!m.quoted) return m.reply("🔓 *VV3 - Audio VV*\nReply an audio viewonce with .vv3");
-
-    const q = m.quoted.message;
-    const vm = q?.viewOnceMessageV2 || q?.viewOnceMessage || q?.viewOnceMessageV2Extension;
-    if(!vm) return m.reply("❌ Not a ViewOnce audio");
-
-    const inner = vm.message;
-    const buffer = await sock.downloadMediaMessage({ message: inner });
-    const type = Object.keys(inner)[0];
-    const content = inner[type];
-
-    if(content.viewOnce) delete content.viewOnce;
-
-    await sock.sendMessage(from,{audio: buffer || content, mimetype:'audio/ogg; codecs=opus', ptt:true}, {quoted:m});
-    await sock.sendMessage(from,{text:"✅ *Audio VV unlocked successfully*"}, {quoted:m});
-
-  } catch(e){
-    m.reply(`❌ VV3 Error: ${e.message}`);
-  }
-}
+  name: 'saveview', category: 'vv',
+  run: async (ctx) => { return sendVV(ctx); }
 },
 {
-name: "saveviewonce", 
-alias: ["svv","savevv","save"], 
-category: "vv",
-desc: "Save ViewOnce to your DM",
-async execute(m,{sock,from}){
-  try {
-    if(!m.quoted) return m.reply("❌ Reply ViewOnce to save");
-    
-    const q = m.quoted.message;
-    const vm = q?.viewOnceMessage || q?.viewOnceMessageV2 || q?.viewOnceMessageV2Extension;
-    if(!vm) return m.reply("❌ Not a ViewOnce message");
-
-    const inner = vm.message;
-    const type = Object.keys(inner)[0];
-    const content = inner[type];
-
-    if(content.viewOnce) delete content.viewOnce;
-    if(content.viewOnceV2) delete content.viewOnceV2;
-
-    const buffer = await sock.downloadMediaMessage({ message: inner }).catch(()=>null);
-
-    if(type === 'imageMessage') {
-      await sock.sendMessage(from,{image: buffer || content, caption:`💾 *SAVED - ZENITH-XMD*\n> Permanent save ✅`}, {quoted:m});
-      await sock.sendMessage(m.sender,{image: buffer || content, caption:"💾 Your saved ViewOnce"}, {quoted:m}).catch(()=>{});
-    } else if(type === 'videoMessage') {
-      await sock.sendMessage(from,{video: buffer || content, caption:"💾 *SAVED VIDEO* ✅"}, {quoted:m});
-    } else {
-      await sock.sendMessage(from,{forward: vm}, {quoted:m});
-    }
-    m.reply("✅ *Saved successfully* - Also sent to your DM if possible");
-  } catch(e){
-    m.reply(`❌ SaveVV Error: ${e.message}`);
-  }
-}
+  name: 'readview', category: 'vv',
+  run: async (ctx) => { return sendVV(ctx); }
 },
 {
-name: "autovv", 
-alias: ["antivv","avv"], 
-category: "vv",
-desc: "Auto unlock all ViewOnce",
-async execute(m,{args}){
-  global.db.settings = global.db.settings || {};
-  if(!args[0]) return m.reply(`*🔓 AUTO VV*\n\nCurrent: ${global.db.settings.autovv ? "ON ✅" : "OFF ❌"}\n\nUse:\n.autovv on - Auto unlock all VV\n.autovv off - Disable`);
-  
-  if(args[0]==="on"){
-    global.db.settings.autovv = true;
-    m.reply("✅ Auto VV ON - All ViewOnce will be auto unlocked");
-  } else if(args[0]==="off"){
-    global.db.settings.autovv = false;
-    m.reply("❌ Auto VV OFF");
-  } else m.reply("Use .autovv on/off");
-}
-}
+  name: 'vvimage', category: 'vv',
+  run: async (ctx) => { return sendVV(ctx, 'image'); }
+},
+{
+  name: 'vvvideo', category: 'vv',
+  run: async (ctx) => { return sendVV(ctx, 'video'); }
+},
+{
+  name: 'vvaudio', category: 'vv',
+  run: async (ctx) => { return sendVV(ctx, 'audio'); }
+},
+{
+  name: 'vvinfo', category: 'vv',
+  run: async ({ reply, m, F }) => {
+    let vv = await getVV(m, F);
+    if (!vv) return reply('👁️ Reply to a VV message to see info');
+    let type = Object.keys(vv.msg)[0];
+    let inner = vv.msg[type];
+    return reply(`👁️ *VV INFO*\n\nType: ${type}\nCaption: ${inner.caption || 'No caption'}\nView Once: ${inner.viewOnce ? 'Yes' : 'No'}\nMimetype: ${inner.mimetype || 'unknown'}\n\nUse .vv to save am`);
+  }
+},
+{
+  name: 'vvstatus', category: 'vv',
+  run: async ({ reply }) => {
+    return reply(`👁️ *VV STATUS*\n\nVV saver is ACTIVE ✅\n\nHow to use:\n1. Someone send you View Once\n2. Reply am with .vv\n3. Bot go send am back as normal photo/video\n\nNo need open am before - if you open am, e go disappear!`);
+  }
+},
+{
+  name: 'vvhelp', category: 'vv',
+  run: async ({ reply, prefix }) => {
+    return reply(`👁️ *VV HELP - VIEW ONCE SAVER*\n\n${prefix}vv - Save any VV (photo/video/audio)\n${prefix}vvimage - Save VV photo only\n${prefix}vvvideo - Save VV video only\n${prefix}vvaudio - Save VV audio only\n${prefix}vvinfo - See VV info\n${prefix}vvstatus - Check if VV active\n\n*IMPORTANT:*\n• Reply to VV message, no open am\n• If you open am before, e go disappear\n• Bot must be in same chat\n\n©️ created by Simon tech inc`);
+  }
+},
 ];
