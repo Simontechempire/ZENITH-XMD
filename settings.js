@@ -39,18 +39,19 @@ module.exports = {
   callLinkEnabled: true,
   disappear90Enabled: true,
 
-  // ===== AUTO DEFAULTS - OPTIMIZED FOR RENDER SPEED =====
-  autoread: false,
-  autostatus: false, // <-- Changed to false for speed
-  autovv: false,
-  autolike: false,
-  autoreact: false,
-  autotyping: false,
-  autorecording: false,
-  autopresence: false,
-  autoreply: false,
+  // ===== AUTO DEFAULTS - ALL TURNED ON =====
+  autoread: true,
+  autostatus: true,
+  autovv: true,
+  autolike: true,
+  autoreact: true,
+  autotyping: true,
+  autorecording: true,
+  autopresence: true,
+  autoreply: true,
   anticall: true,
-  antidelete: false,
+  antidelete: true,
+  antiviewonce: true,
   caption: "© 2026 ZENITH-XMD PEAK",
   footer: "⚡ Powered by Simon",
   menuType: "image",
@@ -68,4 +69,4 @@ module.exports = {
     banned: "⛔ You are banned from using bot",
     done: "✅ Successful"
   }
-}
+    }
