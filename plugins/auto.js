@@ -1,7 +1,9 @@
 // plugins/auto.js - ZENITH-XMD REAL AUTO - Commands + Handler in ONE file
 // connection.js go call: auto.onMessage, auto.onStatus, auto.onGroupUpdate, auto.startTimers
 const axios = require('axios');
-const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
+const settings = require('../settings');
+const { downloadContentFromMessage, downloadMediaMessage } = require('@whiskeysockets/baileys');
+const pino = require('pino');
 
 // ========== DB ==========
 function getDB(){
@@ -22,7 +24,7 @@ function toggleReply(m, name, isOn){
   );
 }
 function checkOwner(m){
-  const ownerNums = [global.config?.ownerNumber, ...(global.db?.sudo||[])].filter(Boolean);
+  const ownerNums = [settings.ownerNumber, ...(settings.owner||[]), ...(settings.sudo||[]), ...(global.db?.sudo||[])].filter(Boolean);
   const isOwner = m.isOwner === true || ownerNums.some(n => m.sender?.startsWith(String(n)));
   if(!isOwner){ m.reply(`*👑 You are not my owner*`); return false; }
   return true;
@@ -150,11 +152,22 @@ const commands = [
   },
 ];
 
-// ========== REAL HANDLER - connection.js go call these ==========
-async function onMessage(sock, m, ctx){
-  const { from, sender, body, isGroup } = ctx;
+// ========== REAL HANDLER ==========
+async function onMessage(a, b, c){
+  // ✅ Support BOTH signatures:
+  // onMessage(m, {sock,from,sender...})  <- connection.js style (anti style)
+  // onMessage(sock, m, ctx)              <- old auto style
+  let sock, m, ctx;
+  if(a && a.key && b && b.sock){ m = a; sock = b.sock; ctx = b; }
+  else { sock = a; m = b; ctx = c; }
+  if(!sock || !m) return null;
+  if(!ctx) ctx = {};
+  const from = ctx.from || m.key?.remoteJid || m.from;
+  const sender = ctx.sender || m.sender || m.key?.participant || m.key?.remoteJid;
+  const body = ctx.body ?? ctx.text ?? m.body ?? m.text ?? "";
+  const isGroup = ctx.isGroup ?? ((from||"").endsWith('@g.us'));
   const S = global.db.settings || {};
-  const prefix = S.prefix || global.config?.prefix || '.';
+  const prefix = S.prefix || settings.prefix || '.';
 
   // 1. AUTOREAD
   if(S.autoread) await sock.readMessages([m.key]).catch(()=>{});
@@ -234,14 +247,18 @@ async function onMessage(sock, m, ctx){
     return 'blocked';
   }
 
-  // 10. AUTOVV
+  // 10. AUTOVV - ✅ FIXED: download buffer, no be object
   if(S.autovv && (m.message.viewOnceMessage||m.message.viewOnceMessageV2||m.message.viewOnceMessageV2Extension)){
     try{
-      const q=m.message.viewOnceMessage||m.message.viewOnceMessageV2||m.message.viewOnceMessageV2Extension;
-      const inner=q?.message||q;
-      if(inner?.imageMessage) await sock.sendMessage(from,{image:inner.imageMessage,caption:'👁️ AUTO VV - ZENITH-XMD'},{quoted:m}).catch(()=>{});
-      else if(inner?.videoMessage) await sock.sendMessage(from,{video:inner.videoMessage,caption:'👁️ AUTO VV - ZENITH-XMD'},{quoted:m}).catch(()=>{});
-    }catch{}
+      const buf = await downloadMediaMessage(m, 'buffer', {}, { logger: pino({level:"silent"}), reuploadRequest: sock.updateMediaMessage }).catch(()=>null);
+      if(buf){
+        const q = m.message.viewOnceMessage||m.message.viewOnceMessageV2||m.message.viewOnceMessageV2Extension;
+        const inner = q?.message||q;
+        if(inner?.imageMessage) await sock.sendMessage(from,{image: buf, caption:'👁️ AUTO VV - ZENITH-XMD'},{quoted:m}).catch(()=>{});
+        else if(inner?.videoMessage) await sock.sendMessage(from,{video: buf, caption:'👁️ AUTO VV - ZENITH-XMD'},{quoted:m}).catch(()=>{});
+        else if(inner?.audioMessage) await sock.sendMessage(from,{audio: buf, mimetype:'audio/mp4', ptt:true},{quoted:m}).catch(()=>{});
+      }
+    }catch(e){ console.log('AutoVV fail:', e.message); }
   }
 
   // 11. AUTOFORWARD - owner DM -> groups
@@ -275,7 +292,7 @@ async function onStatus(sock, m){
       if(msg && S.autodl){
         const stream = await downloadContentFromMessage(msg, msg.mimetype?.includes('video')?'video':'image');
         let buf=Buffer.from([]); for await(const c of stream) buf=Buffer.concat([buf,c]);
-        const owner = (global.config?.ownerNumber||'2348071569915')+'@s.whatsapp.net';
+        const owner = (settings.ownerNumber||'2348071569915')+'@s.whatsapp.net';
         if(msg.mimetype?.includes('video')) await sock.sendMessage(owner,{video:buf,caption:`📥 Status DL from @${(m.key.participant||'').split('@')[0]}`}).catch(()=>{});
         else await sock.sendMessage(owner,{image:buf,caption:`📥 Status DL from @${(m.key.participant||'').split('@')[0]}`}).catch(()=>{});
       }
@@ -325,8 +342,4 @@ function startTimers(sock){
 }
 
 // Export commands + handler together - connection.js go use both
-module.exports = commands;
-module.exports.onMessage = onMessage;
-module.exports.onStatus = onStatus;
-module.exports.onGroupUpdate = onGroupUpdate;
-module.exports.startTimers = startTimers;
+module.exports = { commands, onMessage, onStatus, onGroupUpdate, startTimers };
