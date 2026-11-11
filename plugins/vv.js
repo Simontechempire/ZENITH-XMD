@@ -1,6 +1,7 @@
-// commands/vv.js - VV / VIEW ONCE - FIXED for connection.js loader
+// plugins/vv.js - VV / VIEW ONCE - FIXED for connection.js loader
 // Usage: Reply to a View Once message with .vv
-const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
+const { downloadMediaMessage } = require('@whiskeysockets/baileys');
+const pino = require('pino');
 
 function unwrap(msg){
   if(!msg) return null;
@@ -12,47 +13,59 @@ function unwrap(msg){
 }
 
 function getVV(m){
-  // 1. Quoted first
+  // 1. Quoted first - connection.js already built m.quoted
   let ctx = m.message?.extendedTextMessage?.contextInfo;
   let quoted = ctx?.quotedMessage;
   if(quoted){
     let inner = unwrap(quoted);
     if(inner && (inner.imageMessage || inner.videoMessage || inner.audioMessage)){
-      return { msg: inner, key: { remoteJid: m.key.remoteJid, id: ctx.stanzaId, participant: ctx.participant, fromMe: false } };
+      return { msg: inner, type: Object.keys(inner)[0] };
     }
-    // quoted is image/video with viewOnce flag directly
     if(quoted?.imageMessage?.viewOnce || quoted?.videoMessage?.viewOnce || quoted?.audioMessage?.viewOnce){
-      return { msg: quoted, key: { remoteJid: m.key.remoteJid, id: ctx.stanzaId, participant: ctx.participant, fromMe: false } };
+      return { msg: quoted, type: Object.keys(quoted)[0] };
     }
   }
-  // 2. Current msg is VV (if person send VV + .vv together - rare)
+  // 2. m.quoted from connection.js
+  if(m.quoted){
+    let inner = unwrap(m.quoted.message);
+    if(inner && (inner.imageMessage || inner.videoMessage || inner.audioMessage)){
+      return { msg: inner, type: Object.keys(inner)[0] };
+    }
+  }
+  // 3. Current msg is VV
   let cur = unwrap(m.message);
-  if(cur && (cur.imageMessage || cur.videoMessage || cur.audioMessage) && m.message?.viewOnceMessage){
-    return { msg: cur, key: m.key };
+  if(cur && (cur.imageMessage || cur.videoMessage || cur.audioMessage) && (m.message?.viewOnceMessage || m.message?.viewOnceMessageV2 || m.message?.viewOnceMessageV2Extension)){
+    return { msg: cur, type: Object.keys(cur)[0] };
   }
   return null;
 }
 
-async function downloadVV(vv){
-  let type = Object.keys(vv.msg)[0];
-  let media = vv.msg[type];
-  let kind = type.replace('Message',''); // image / video / audio
-  try{
-    let stream = await downloadContentFromMessage(media, kind);
-    let chunks = [];
-    for await (let c of stream) chunks.push(c);
-    return { buf: Buffer.concat(chunks), type };
-  }catch(e){
-    console.log('VV download fail:', e.message);
-    return { buf: null, type };
+async function downloadVV(m, sock, from){
+  // ✅ BEST: use m.quoted.download() from connection.js - e already get correct key
+  if(m.quoted && typeof m.quoted.download === 'function'){
+    try{
+      const buf = await m.quoted.download();
+      if(buf && buf.length > 0) return buf;
+    }catch(e){ console.log('VV quoted download fail:', e.message); }
   }
+  // Fallback: build fake message with quoted key
+  try{
+    const ctx = m.message?.extendedTextMessage?.contextInfo;
+    if(ctx?.quotedMessage){
+      const fake = { key: { remoteJid: from, id: ctx.stanzaId, participant: ctx.participant, fromMe: false }, message: ctx.quotedMessage };
+      const buf = await downloadMediaMessage(fake, 'buffer', {}, { logger: pino({level:"silent"}), reuploadRequest: sock.updateMediaMessage });
+      if(buf) return buf;
+    }
+  }catch(e){ console.log('VV fallback download fail:', e.message); }
+  return null;
 }
 
 async function sendVV(m, { sock, from }, onlyType = null){
   let vv = getVV(m);
   if(!vv) return m.reply('👁️ *Reply to a View Once message first!*\n\nUsage: Reply to VV photo/video with .vv\n\n©️ Zenith tech');
-  let { buf, type } = await downloadVV(vv);
+  let buf = await downloadVV(m, sock, from);
   if(!buf) return m.reply('❌ Failed to download VV. Try again, or sender don open am already.');
+  let type = vv.type;
   if(onlyType && !type.includes(onlyType)) return m.reply(`This VV is ${type}, not ${onlyType}. Use .vv for all.`);
   let caption = `✅ *VIEW ONCE SAVED*\nType: ${type}\n\n©️ Zenith bypasser view once`;
   if(type === 'imageMessage') return sock.sendMessage(from, { image: buf, caption }, { quoted: m });
@@ -83,7 +96,7 @@ module.exports = [
   execute: async (m) => {
     let vv = getVV(m);
     if(!vv) return m.reply('👁️ Reply to a VV message to see info');
-    let type = Object.keys(vv.msg)[0];
+    let type = vv.type;
     let inner = vv.msg[type];
     return m.reply(`👁️ *VV INFO*\n\nType: ${type}\nCaption: ${inner.caption || 'No caption'}\nView Once: ${inner.viewOnce ? 'Yes' : 'No'}\nMimetype: ${inner.mimetype || 'unknown'}\n\nUse .vv to save am`);
   }
