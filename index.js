@@ -1,16 +1,8 @@
 /**
- * ZENITH-XMD PEAK V2
- * Entry - Optimized for Render + Katabump FAST REPLY
+ * ZENITH-XMD PEAK V2 - FIXED
+ * Entry - No delay, Fast Pairing
  */
 require('dotenv').config();
-
-// ⚡ SPEED BOOST - MUST BE FIRST
-try { 
-  require('./lib/renderBoost').init(); 
-  console.log('⚡ Speed booster loaded in index.js');
-} catch (e) { 
-  console.log('⚠️ renderBoost not found, create lib/renderBoost.js');
-}
 
 const fs = require('fs');
 const path = require('path');
@@ -31,6 +23,9 @@ try { config = require('./settings'); } catch {
 global.config = config;
 global.plugins = new Map();
 
+// ✅ Show pairing number immediately so you know which number to enter code for
+const PAIR_NUMBER = (process.env.PHONE_NUMBER || process.env.PAIR_NUMBER || config.ownerNumber).replace(/[^0-9]/g,'');
+
 console.log(chalk.cyan.bold(`
 ╭━━━━━━━━━━━━━━━━━━━━━━━━━━╮
 ┃ ⚡ ZENITH-XMD PEAK V2    ┃
@@ -38,23 +33,19 @@ console.log(chalk.cyan.bold(`
 ┃ Owner: ${config.ownerName} | Prefix: ${config.prefix} ┃
 ╰━━━━━━━━━━━━━━━━━━━━━━━━━━╯
 `));
-
 console.log(chalk.green(`🚀 Starting ${config.botName}...`));
-console.log(chalk.yellow(`📂 Plugins will be wired inside connection.js`));
-console.log(chalk.yellow(`🌐 Port: ${config.PORT}\n`));
+console.log(chalk.yellow(`📱 Pairing Number: ${PAIR_NUMBER}`));
+console.log(chalk.yellow(`🌐 Port: ${config.PORT}`));
+console.log(chalk.yellow(`⏳ Pairing code go show in 2-3 seconds...\n`));
 
-// Auto restart if memory too high (Render 512MB fix)
-setInterval(() => {
-  const mem = process.memoryUsage().heapUsed / 1024 / 1024;
-  if (mem > 450) {
-    console.log(chalk.red(`⚠️ High memory ${mem.toFixed(0)}MB - cleaning...`));
-    if (global.gc) global.gc();
-  }
-}, 60000);
+// ✅ REMOVED renderBoost - e dey cause delay / hang
+// ✅ REMOVED memory setInterval - e dey waste CPU for Render
 
+// ✅ Start immediately, no delay
 startConnection().catch(err => {
-  console.error(chalk.red('❌ Failed to start:'), err);
-  setTimeout(() => startConnection(), 5000);
+  console.error(chalk.red('❌ Failed to start:'), err.message);
+  // Retry fast - 2s not 5s
+  setTimeout(() => startConnection(), 2000);
 });
 
 process.on('uncaughtException', (e) => console.log(chalk.red('Uncaught:'), e.message));
